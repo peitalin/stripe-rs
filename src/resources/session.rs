@@ -20,7 +20,7 @@ pub struct Session {
     pub client_reference_id: Option<String>,
     pub customer: Option<String>, // May only be used with line_items
     pub customer_email: Option<String>,
-    pub line_items: Option<Vec<LineItem>>,
+    pub line_items: Vec<LineItem>,
     pub locale: Option<String>,
     pub payment_intent_data: Option<PaymentIntent>,
     pub subscription_data: Option<SubscriptionData>,
