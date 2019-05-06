@@ -9,46 +9,42 @@ pub struct SessionParams {
     pub payment_method_types: Vec<String>,
     pub success_url: String,
     pub line_items: Vec<LineItem>,
-}
-
-#[derive(Debug, Clone, Default, Deserialize, Serialize)]
-pub struct Session {
-    pub cancel_url: String,
-    pub success_url: String,
-    pub payment_method_types: Vec<String>,
     pub billing_address_collection: Option<String>,
     pub client_reference_id: Option<String>,
     pub customer: Option<String>, // May only be used with line_items
     pub customer_email: Option<String>,
-    pub line_items: Vec<LineItem>,
     pub locale: Option<String>,
     pub payment_intent_data: Option<PaymentIntent>,
-    pub subscription_data: Option<SubscriptionData>,
+    pub subscription_data: Option<SubscriptionData>
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+pub struct Session {
+    pub id: String,
+    pub object: String,
+    pub billing_address_collection: Option<String>,
+    pub cancel_url: String,
+    pub client_reference_id: Option<String>,
+    pub customer: Option<String>,
+    pub customer_email: Option<String>,
+    pub display_items: Vec<LineItem>,
+    pub livemode: bool,
+    pub locale: Option<String>,
+    pub payment_intent: String,
+    pub payment_method_types: Vec<String>,
+    pub subscription: Option<SubscriptionData>,
+    pub success_url: Option<String>
 }
 // curl https://api.stripe.com/v1/checkout/sessions 
  
 impl Session {
-    pub fn create(client: &Client, params: SessionParams) -> Response<SessionResponse> {
+    pub fn create(client: &Client, params: SessionParams) -> Response<Session> {
         client.post_form("/checkout/sessions", params)
     }
-}
 
-#[derive(Debug, Clone, Default, Deserialize, Serialize)]
-pub struct SessionResponse {
-  pub id: String,
-  pub object: String,
-  pub billing_address_collection: Option<String>,
-  pub cancel_url: String,
-  pub client_reference_id: Option<String>,
-  pub customer: Option<String>,
-  pub customer_email: Option<String>,
-  pub display_items: Vec<LineItem>,
-  pub livemode: bool,
-  pub locale: Option<String>,
-  pub payment_intent: String,
-  pub payment_method_types: Vec<String>,
-  pub subscription: Option<SubscriptionData>,
-  pub success_url: Option<String>
+    pub fn retrieve<'a>(client: &Client, session_id: &'a str) -> Response<Session> {
+        client.post_form("/checkout/sessions", session_id)
+    }
 }
 
 // use crate::resources::{ShippingDetails};
