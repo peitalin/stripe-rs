@@ -28,9 +28,27 @@ pub struct Session {
 // curl https://api.stripe.com/v1/checkout/sessions 
  
 impl Session {
-    pub fn create(client: &Client, params: SessionParams) -> Response<Session> {
+    pub fn create(client: &Client, params: SessionParams) -> Response<SessionResponse> {
         client.post_form("/checkout/sessions", params)
     }
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+pub struct SessionResponse {
+  pub id: String,
+  pub object: String,
+  pub billing_address_collection: Option<String>,
+  pub cancel_url: String,
+  pub client_reference_id: Option<String>,
+  pub customer: Option<String>,
+  pub customer_email: Option<String>,
+  pub display_items: Vec<LineItem>,
+  pub livemode: bool,
+  pub locale: Option<String>,
+  pub payment_intent: String,
+  pub payment_method_types: Vec<String>,
+  pub subscription: Option<SubscriptionData>,
+  pub success_url: Option<String>
 }
 
 // use crate::resources::{ShippingDetails};
@@ -56,12 +74,17 @@ pub struct SubscriptionData {
 pub struct LineItem {
     pub amount: i32,
     pub currency: String,
-    pub name: String,
+    pub name: Option<String>,
     pub quantity: i32,
-    pub description: String,
-    pub images: Vec<String>,
+    pub description: Option<String>,
+    pub images: Option<Vec<String>>,
+    pub custom: Option<LineItemCustom>,
 }
  
-
-
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct LineItemCustom {
+    pub description: String,
+    pub images: Option<Vec<String>>,
+    pub name: String,
+}
 
