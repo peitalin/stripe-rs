@@ -1,5 +1,5 @@
 use crate::params::{Identifiable, Metadata};
-use crate::resources::Currency;
+use crate::resources::{ Address, Currency };
 use serde::ser::SerializeStruct;
 use serde_derive::{Deserialize, Serialize};
 
@@ -46,6 +46,7 @@ pub struct Card {
     pub address_zip_check: Option<CheckResult>,
     pub available_payout_methods: Option<Vec<String>>,
     pub brand: CardBrand,
+    pub checks: Option<Checks>,
     pub country: String, // eg. "US"
     pub currency: Option<Currency>,
     pub customer: Option<String>,
@@ -56,11 +57,14 @@ pub struct Card {
     pub exp_year: u32,
     pub fingerprint: String,
     pub funding: CardType,
+    pub generated_from: Option<String>,
     pub last4: String,
     pub metadata: Metadata,
     pub name: Option<String>,
     pub recipient: Option<String>,
+    pub three_d_secure_usage: Option<ThreeDSecureUsage>,
     pub tokenization_method: Option<TokenizationMethod>,
+    pub wallet: Option<Wallet>,
 }
 
 /// Card details returned as part of a `Source` object
@@ -152,4 +156,36 @@ impl Identifiable for Card {
     fn id(&self) -> &str {
         &self.id
     }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Checks {
+    address_line1_check: Option<String>,
+    address_postal_code_check: Option<String>,
+    cvc_check: Option<String>
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ThreeDSecureUsage {
+    supported: bool
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Wallet {
+    amex_express_checkout: String,
+    apple_pay: String,
+    dynamic_last4: String,
+    google_pay: String,
+    masterpass: String,
+    samsung_pay: String,
+    r#type: String,
+    visa_checkout: String,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct VisaCheckout {
+    billing_address: Address,
+    email: String,
+    name: String,
+    shipping_address: Address,
 }

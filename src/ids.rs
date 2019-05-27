@@ -137,11 +137,15 @@ id!(BankAccountId, "ba_");
 id!(BankTokenId, "btok_");
 id!(CardId, "card_");
 id!(CardTokenId, "tok_");
+id!(CustomerId, "cus_");
+id!(PaymentMethodId, "pm_");
 id!(SourceId, "src_");
+
 id!(TokenId {
     Card(CardTokenId),
     Bank(BankTokenId),
 });
+
 id!(PaymentSourceId {
     BankAcccount(BankAccountId),
     Card(CardId),
