@@ -1,11 +1,6 @@
-<<<<<<< HEAD
-use crate::params::{Identifiable, Metadata};
-use crate::resources::{ Address, Currency };
-=======
+use crate::params::{Metadata, Expandable, Object};
 use crate::ids::CardId;
-use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Account, Currency, Customer};
->>>>>>> master
+use crate::resources::{Address, Account, Currency, Customer};
 use serde::ser::SerializeStruct;
 use serde_derive::{Deserialize, Serialize};
 

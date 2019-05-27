@@ -243,14 +243,15 @@ id!(BankTokenId, "btok_");
 id!(CardId, "card_");
 id!(CardTokenId, "tok_");
 id!(ChargeId, "ch_");
+id!(CustomerId, "cus_");
+id!(InvoiceId, "in_");
+id!(InvoiceLineItemId, "ii_");
 id!(PaymentMethodId, "pm_");
 id!(SourceId, "src_");
-
 id!(TokenId {
     Card(CardTokenId),
     Bank(BankTokenId),
 });
-
 id!(PaymentSourceId {
     Account(AccountId),
     AlipayAccountId(AlipayAccountId),

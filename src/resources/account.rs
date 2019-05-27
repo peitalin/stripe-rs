@@ -1,5 +1,5 @@
+use crate::params::{List, Metadata, Timestamp, Object};
 use crate::ids::AccountId;
-use crate::params::{List, Metadata, Object, Timestamp};
 use crate::resources::{BankAccount, Currency};
 use serde_derive::{Deserialize, Serialize};
 
@@ -85,13 +85,8 @@ pub struct Account {
     pub email: String,
     /// External accounts (bank accounts and debit cards) currently attached to this account.
     pub external_accounts: List<BankAccount>,
-<<<<<<< HEAD
-    pub keys: Keys,
-    pub legal_entity: Option<serde_json::Value>,
-=======
     /// Set of key-value pairs that you can attach to an object. This can be useful for storing
     /// additional information about the object in a structured format.
->>>>>>> master
     pub metadata: Metadata,
     /// Whether Stripe can send payouts to this account.
     pub payouts_enabled: bool,
@@ -121,20 +116,9 @@ pub struct Account {
     pub verification: Option<serde_json::Value>,
 }
 
-<<<<<<< HEAD
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Keys {
-    pub secret: String,
-    pub publishable: String,
-}
-
-impl Identifiable for Account {
-    fn id(&self) -> &str {
-=======
 impl Object for Account {
     type Id = AccountId;
     fn id(&self) -> &Self::Id {
->>>>>>> master
         &self.id
     }
     fn object(&self) -> &'static str {
