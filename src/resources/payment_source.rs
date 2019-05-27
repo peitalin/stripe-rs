@@ -1,6 +1,8 @@
 use crate::ids::{SourceId, TokenId};
-use crate::params::Identifiable;
-use crate::resources::{BankAccount, BankAccountParams, Card, CardParams, Source};
+use crate::params::Paginate;
+use crate::resources::{
+    Account, AlipayAccount, BankAccount, BankAccountParams, Card, CardParams, Source,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// A PaymentSourceParams represents all of the supported ways that can
@@ -122,15 +124,19 @@ impl<'a> ::serde::Serialize for PaymentSourceParams<'a> {
 pub enum PaymentSource {
     Card(Card),
     Source(Source),
+    Account(Account),
     BankAccount(BankAccount),
+    AlipayAccount(AlipayAccount),
 }
 
-impl Identifiable for PaymentSource {
-    fn id(&self) -> &str {
+impl Paginate for PaymentSource {
+    fn cursor(&self) -> &str {
         match self {
-            PaymentSource::Card(c) => c.id(),
-            PaymentSource::Source(s) => s.id(),
-            PaymentSource::BankAccount(b) => b.id(),
+            PaymentSource::Card(x) => x.cursor(),
+            PaymentSource::Source(x) => x.cursor(),
+            PaymentSource::Account(x) => x.cursor(),
+            PaymentSource::BankAccount(x) => x.cursor(),
+            PaymentSource::AlipayAccount(x) => x.cursor(),
         }
     }
 }

@@ -1,49 +1,110 @@
 macro_rules! id {
-    ($newtype_name:ident, $prefix:expr) => {
-        #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
-        pub struct $newtype_name(String);
+    ($struct_name:ident, $prefix:expr) => {
+        /// An id for the corresponding object type.
+        ///
+        /// This type _typically_ will not allocate and
+        /// therefore is usually cheaply clonable.
+        #[derive(Clone, Debug, Eq, PartialEq, Hash)]
+        pub struct $struct_name(smol_str::SmolStr);
 
-        impl $newtype_name {
-            #[inline]
+        impl $struct_name {
+            /// The prefix of the id type (e.g. `cus_` for a `CustomerId`).
+            #[inline(always)]
             pub fn prefix() -> &'static str {
                 $prefix
             }
+
+            /// Extracts a string slice containing the entire id.
+            #[inline(always)]
+            pub fn as_str(&self) -> &str {
+                self.0.as_str()
+            }
         }
 
-        impl ::std::fmt::Display for $newtype_name {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        impl PartialEq<str> for $struct_name {
+            fn eq(&self, other: &str) -> bool {
+                self.as_str() == other
+            }
+        }
+
+        impl PartialEq<&str> for $struct_name {
+            fn eq(&self, other: &&str) -> bool {
+                self.as_str() == *other
+            }
+        }
+
+        impl PartialEq<String> for $struct_name {
+            fn eq(&self, other: &String) -> bool {
+                self.as_str() == other
+            }
+        }
+
+        impl PartialOrd for $struct_name {
+            fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+                Some(self.cmp(other))
+            }
+        }
+
+        impl Ord for $struct_name {
+            fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+                self.as_str().cmp(other.as_str())
+            }
+        }
+
+        impl AsRef<str> for $struct_name {
+            fn as_ref(&self) -> &str {
+                self.as_str()
+            }
+        }
+
+        impl crate::params::AsStrParam for $struct_name {}
+
+        impl std::ops::Deref for $struct_name {
+            type Target = str;
+
+            fn deref(&self) -> &str {
+                self.as_str()
+            }
+        }
+
+        impl std::fmt::Display for $struct_name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 self.0.fmt(f)
             }
         }
 
-        impl ::std::str::FromStr for $newtype_name {
+        impl std::str::FromStr for $struct_name {
             type Err = ParseIdError;
 
             fn from_str(s: &str) -> Result<Self, Self::Err> {
                 if !s.starts_with($prefix) {
+
+                    // N.B. For debugging
+                    // eprintln!("bad id is: {}", s);
+
                     Err(ParseIdError {
-                        typename: stringify!($newtype_name),
+                        typename: stringify!($struct_name),
                         expected: stringify!(id to start with $prefix),
                     })
                 } else {
-                    Ok($newtype_name(s.to_owned()))
+                    Ok($struct_name(s.into()))
                 }
             }
         }
 
-        impl ::serde::Serialize for $newtype_name {
+        impl serde::Serialize for $struct_name {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-                where S: ::serde::ser::Serializer
+                where S: serde::ser::Serializer
             {
-                self.to_string().serialize(serializer)
+                self.as_str().serialize(serializer)
             }
         }
 
-        impl<'de> ::serde::Deserialize<'de> for $newtype_name {
+        impl<'de> serde::Deserialize<'de> for $struct_name {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-                where D: ::serde::de::Deserializer<'de>
+                where D: serde::de::Deserializer<'de>
             {
-                let s: String = ::serde::Deserialize::deserialize(deserializer)?;
+                let s: String = serde::Deserialize::deserialize(deserializer)?;
                 s.parse::<Self>().map_err(::serde::de::Error::custom)
             }
         }
@@ -55,15 +116,57 @@ macro_rules! id {
             $variant_name($($variant_type)*),
         )*}
 
-        impl ::std::fmt::Display for $enum_name {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        impl $enum_name {
+            pub fn as_str(&self) -> &str {
+                match *self {$(
+                    $enum_name::$variant_name(ref id) => id.as_str(),
+                )*}
+            }
+        }
+
+        impl PartialEq<str> for $enum_name {
+            fn eq(&self, other: &str) -> bool {
+                self.as_str() == other
+            }
+        }
+
+        impl PartialEq<&str> for $enum_name {
+            fn eq(&self, other: &&str) -> bool {
+                self.as_str() == *other
+            }
+        }
+
+        impl PartialEq<String> for $enum_name {
+            fn eq(&self, other: &String) -> bool {
+                self.as_str() == other
+            }
+        }
+
+        impl AsRef<str> for $enum_name {
+            fn as_ref(&self) -> &str {
+                self.as_str()
+            }
+        }
+
+        impl crate::params::AsStrParam for $enum_name {}
+
+        impl std::ops::Deref for $enum_name {
+            type Target = str;
+
+            fn deref(&self) -> &str {
+                self.as_str()
+            }
+        }
+
+        impl std::fmt::Display for $enum_name {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
                 match *self {$(
                     $enum_name::$variant_name(ref id) => id.fmt(f),
                 )*}
             }
         }
 
-        impl ::std::str::FromStr for $enum_name {
+        impl std::str::FromStr for $enum_name {
             type Err = ParseIdError;
 
             fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -88,19 +191,19 @@ macro_rules! id {
             }
         }
 
-        impl ::serde::Serialize for $enum_name {
+        impl serde::Serialize for $enum_name {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-                where S: ::serde::ser::Serializer
+                where S: serde::ser::Serializer
             {
-                self.to_string().serialize(serializer)
+                self.as_str().serialize(serializer)
             }
         }
 
-        impl<'de> ::serde::Deserialize<'de> for $enum_name {
+        impl<'de> serde::Deserialize<'de> for $enum_name {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-                where D: ::serde::de::Deserializer<'de>
+                where D: serde::de::Deserializer<'de>
             {
-                let s: String = ::serde::Deserialize::deserialize(deserializer)?;
+                let s: String = serde::Deserialize::deserialize(deserializer)?;
                 s.parse::<Self>().map_err(::serde::de::Error::custom)
             }
         }
@@ -121,23 +224,25 @@ pub struct ParseIdError {
     expected: &'static str,
 }
 
-impl ::std::fmt::Display for ParseIdError {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+impl std::fmt::Display for ParseIdError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "invalid `{}`, expected {}", self.typename, self.expected)
     }
 }
 
-impl ::std::error::Error for ParseIdError {
+impl std::error::Error for ParseIdError {
     fn description(&self) -> &str {
         "error parsing an id"
     }
 }
 
+id!(AccountId, "acct_");
+id!(AlipayAccountId, "aliacc_");
 id!(BankAccountId, "ba_");
 id!(BankTokenId, "btok_");
 id!(CardId, "card_");
 id!(CardTokenId, "tok_");
-id!(CustomerId, "cus_");
+id!(ChargeId, "ch_");
 id!(PaymentMethodId, "pm_");
 id!(SourceId, "src_");
 
@@ -147,7 +252,9 @@ id!(TokenId {
 });
 
 id!(PaymentSourceId {
-    BankAcccount(BankAccountId),
+    Account(AccountId),
+    AlipayAccountId(AlipayAccountId),
+    BankAccount(BankAccountId),
     Card(CardId),
     Source(SourceId),
 });
