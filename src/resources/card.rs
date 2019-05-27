@@ -7,7 +7,6 @@ use serde_derive::{Deserialize, Serialize};
 pub struct CardParams<'a> {
     pub exp_month: &'a str, // eg. "12"
     pub exp_year: &'a str,  // eg. "17" or 2017"
-
     pub number: &'a str,       // card number
     pub name: Option<&'a str>, // cardholder's full name
     pub cvc: Option<&'a str>,  // card security code

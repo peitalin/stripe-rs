@@ -33,7 +33,10 @@ impl PaymentMethod {
     /// -d card[cvc]=123
     ///
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
-    pub fn create(client: &Client, params: PaymentMethod) -> Response<PaymentMethod> {
+    pub fn create(
+        client: &Client,
+        params: CreatePaymentMethodParams
+    ) -> Response<PaymentMethod> {
         client.post_form("/payment_methods", params)
     }
 
@@ -115,6 +118,13 @@ impl PaymentMethod {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CreatePaymentMethodParams {
+    r#type: PaymentMethodType,
+    billing_details: Option<BillingDetails>,
+    card: Option<Card>,
+    metadata: Option<HashMap<String, String>>,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UpdatePaymentMethodParams {
