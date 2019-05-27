@@ -121,8 +121,10 @@ impl PaymentMethod {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreatePaymentMethodParams {
     pub r#type: PaymentMethodType,
-    pub billing_details: Option<BillingDetails>,
     pub card: CreatePaymentMethodCardParams,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_details: Option<BillingDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<HashMap<String, String>>,
 }
 
@@ -131,11 +133,11 @@ pub struct CreatePaymentMethodCardParams {
     pub exp_month: String, // eg. "12"
     pub exp_year: String,  // eg. "17" or 2017"
     pub number: String,       // card number
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>, // cardholder's full name
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc: Option<String>,  // card security code
 }
-
-
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UpdatePaymentMethodParams {
