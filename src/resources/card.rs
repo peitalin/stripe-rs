@@ -164,32 +164,38 @@ impl Object for Card {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Checks {
-    address_line1_check: Option<String>,
-    address_postal_code_check: Option<String>,
-    cvc_check: Option<String>
+    pub address_line1_check: Option<String>,
+    pub address_postal_code_check: Option<String>,
+    pub cvc_check: Option<String>
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ThreeDSecureUsage {
-    supported: bool
+    pub supported: bool
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Wallet {
-    amex_express_checkout: String,
-    apple_pay: String,
-    dynamic_last4: String,
-    google_pay: String,
-    masterpass: String,
-    samsung_pay: String,
-    r#type: String,
-    visa_checkout: String,
+    pub amex_express_checkout: String,
+    pub apple_pay: String,
+    pub dynamic_last4: String,
+    pub google_pay: String,
+    pub masterpass: String,
+    pub samsung_pay: String,
+    pub r#type: String,
+    pub visa_checkout: String,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct VisaCheckout {
-    billing_address: Address,
-    email: String,
-    name: String,
-    shipping_address: Address,
+    pub billing_address: Address,
+    pub email: String,
+    pub name: String,
+    pub shipping_address: Address,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct CardParamsShort {
+    pub exp_month: Option<String>,
+    pub exp_year: Option<String>,
 }

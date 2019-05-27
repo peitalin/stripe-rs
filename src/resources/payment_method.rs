@@ -6,17 +6,17 @@ use serde_derive::{Deserialize, Serialize};
 // use crate::resources::{BankAccount, BankAccountParams, Card, CardParams, Source};
 
 use crate::params::{Timestamp, Metadata};
-use crate::resources::{Address, Card };
+use crate::resources::{Address, Card, CardParamsShort };
 use crate::ids::{PaymentMethodId, CustomerId};
 use std::collections::HashMap;
 
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaymentMethod {
-    r#type: PaymentMethodType,
-    billing_details: BillingDetails,
-    card: Card,
-    metadata: HashMap<String, String>,
+    pub r#type: PaymentMethodType,
+    pub billing_details: BillingDetails,
+    pub card: Card,
+    pub metadata: Option<HashMap<String, String>>,
 }
 
 impl PaymentMethod {
@@ -120,28 +120,39 @@ impl PaymentMethod {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreatePaymentMethodParams {
-    r#type: PaymentMethodType,
-    billing_details: Option<BillingDetails>,
-    card: Option<Card>,
-    metadata: Option<HashMap<String, String>>,
+    pub r#type: PaymentMethodType,
+    pub billing_details: Option<BillingDetails>,
+    pub card: CreatePaymentMethodCardParams,
+    pub metadata: Option<HashMap<String, String>>,
 }
+
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+pub struct CreatePaymentMethodCardParams {
+    pub exp_month: String, // eg. "12"
+    pub exp_year: String,  // eg. "17" or 2017"
+    pub number: String,       // card number
+    pub name: Option<String>, // cardholder's full name
+    pub cvc: Option<String>,  // card security code
+}
+
+
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UpdatePaymentMethodParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_details: Option<BillingDetails>,
+    pub billing_details: Option<BillingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    card: Option<Card>,
+    pub card: Option<CardParamsShort>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BillingDetails {
-    address: Address,
-    email: Option<String>,
-    name: Option<String>,
-    phone: Option<String>,
+    pub address: Address,
+    pub email: Option<String>,
+    pub name: Option<String>,
+    pub phone: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -153,39 +164,39 @@ pub enum PaymentMethodType {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaymentMethodResponse {
-  id: PaymentMethodId,
-  object: String,
-  billing_details: BillingDetails,
-  card: Card,
-  created: Timestamp,
-  customer: CustomerId,
-  livemode: bool,
-  metadata: Metadata,
-  r#type: String,
+  pub id: PaymentMethodId,
+  pub object: String,
+  pub billing_details: BillingDetails,
+  pub card: Card,
+  pub created: Timestamp,
+  pub customer: CustomerId,
+  pub livemode: bool,
+  pub metadata: Metadata,
+  pub r#type: String,
 }
 
 /// https://stripe.com/docs/api/payment_methods/list?lang=curl
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ListCustomerPaymentMethodsParams {
-    customer: CustomerId,
-    r#type: String,
+    pub customer: CustomerId,
+    pub r#type: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<String>,
+    pub ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<i32>,
+    pub limit: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<String>,
+    pub starting_after: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ListCustomerPaymentMethodsResponse {
-    object: String,
-    url: String,
-    has_more: bool,
-    data: Vec<PaymentMethodResponse>,
+    pub object: String,
+    pub url: String,
+    pub has_more: bool,
+    pub data: Vec<PaymentMethodResponse>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AttachCustomerPaymentMethodsParams {
-    customer: CustomerId,
+    pub customer: CustomerId,
 }
