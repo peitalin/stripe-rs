@@ -30,7 +30,8 @@ impl PaymentMethod {
     /// -d card[number]=4242424242424242 \
     /// -d card[exp_month]=12 \
     /// -d card[exp_year]=2020 \
-    /// -d card[cvc]=123
+    /// -d card[cvc]=123 \
+    /// -d billing_details[email]=andrew.yang@yanggang.com
     ///
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
     pub fn create(
@@ -200,5 +201,5 @@ pub struct ListCustomerPaymentMethodsResponse {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AttachCustomerPaymentMethodsParams {
-    pub customer: CustomerId,
+    pub customer_id: CustomerId,
 }
