@@ -61,6 +61,7 @@ pub struct Account {
     pub display_name: String,
     pub email: String,
     pub external_accounts: List<BankAccount>,
+    pub keys: Keys,
     pub legal_entity: Option<serde_json::Value>,
     pub metadata: Metadata,
     pub payout_schedule: Option<PayoutScheduleDetails>,
@@ -75,6 +76,12 @@ pub struct Account {
     #[serde(rename = "type")]
     pub account_type: Option<String>, // (Stripe, Custom, or Express)
     pub verification: Option<serde_json::Value>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Keys {
+    pub secret: String,
+    pub publishable: String,
 }
 
 impl Identifiable for Account {

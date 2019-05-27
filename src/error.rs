@@ -101,7 +101,6 @@ impl From<std::io::Error> for Error {
 pub enum ErrorType {
     #[serde(skip_deserializing)]
     Unknown,
-
     #[serde(rename = "api_error")]
     Api,
     #[serde(rename = "api_connection_error")]
