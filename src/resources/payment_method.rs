@@ -149,7 +149,7 @@ pub struct UpdatePaymentMethodParams {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BillingDetails {
-    pub address: Address,
+    pub address: Option<Address>,
     pub email: Option<String>,
     pub name: Option<String>,
     pub phone: Option<String>,
