@@ -1,4 +1,4 @@
-use crate::params::{List, Metadata, Object, Timestamp};
+use crate::params::{List, Metadata, Timestamp};
 use crate::resources::{
     Address,
     CustomerShippingDetails,
@@ -10,7 +10,7 @@ use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct CustomerResponse {
     pub id: String,
     pub object: String,
@@ -110,7 +110,7 @@ pub struct CustomerResponse {
 /// The set of parameters that can be used when creating or updating a customer.
 ///
 /// For more details see: https://stripe.com/docs/api/customers/update
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct CustomerUpdateParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<i32>,
@@ -136,13 +136,14 @@ pub struct CustomerUpdateParams {
     pub shipping: Option<CustomerShippingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
+    // pub source: Option<PaymentSourceParams<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_info: Option<TaxInfo>,
 }
 
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct AddressParams {
     pub line1: String,
     pub line2: Option<String>,
@@ -153,19 +154,19 @@ pub struct AddressParams {
 }
 
 /// Deprecated
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct TaxInfo {
     pub tax_id: String,
     pub r#type: String,
 }
 
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct TaxIdData {
     pub value: String,
     pub r#type: String,
 }
 
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct InvoiceSettings {
     pub custom_field: Option<HashMap<String, String>>,
     pub default_payment_method: Option<String>,

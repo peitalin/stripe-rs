@@ -2,8 +2,11 @@ use crate::config::{Client, Response};
 use crate::ids::{BankAccountId, CustomerId, PaymentSourceId};
 use crate::params::{List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource,
+    Address, BankAccount, BankAccountVerifyParams,
+    Currency, Deleted, Discount, PaymentSource,
     PaymentSourceParams, Source, Subscription,
+    CustomerResponse,
+    CustomerUpdateParams,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -102,11 +105,22 @@ impl Customer {
     /// Updates a customer's properties.
     ///
     /// For more details see https://stripe.com/docs/api#update_customer.
-    pub fn update(
+    pub fn update_v1(
         client: &Client,
         customer_id: &CustomerId,
         params: CustomerParams<'_>,
     ) -> Response<Customer> {
+        client.post_form(&format!("/customers/{}", customer_id), params)
+    }
+
+    /// Updates a customer's properties.
+    ///
+    /// For more details see: https://stripe.com/docs/api/customers/update
+    pub fn update(
+        client: &Client,
+        customer_id: String,
+        params: CustomerUpdateParams,
+    ) -> Response<CustomerResponse> {
         client.post_form(&format!("/customers/{}", customer_id), params)
     }
 
