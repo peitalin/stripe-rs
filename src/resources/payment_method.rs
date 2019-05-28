@@ -190,7 +190,8 @@ pub struct ListCustomerPaymentMethodsParams {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AttachCustomerPaymentMethodsParams {
-    pub customer_id: String,
+    pub customer: String,
+    // customer_id: cus_F91mxXM992j41y
 }
 
 //////////////////////////
