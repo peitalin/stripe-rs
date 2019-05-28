@@ -296,6 +296,7 @@ impl List<Invoice> {
             }
         } else {
             ok(List {
+                object: self.object.clone(),
                 data: Vec::new(),
                 has_more: false,
                 total_count: self.total_count,

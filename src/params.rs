@@ -107,6 +107,7 @@ where
 /// A single page of a cursor-paginated list of an object.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct List<T> {
+    pub object: String,
     pub data: Vec<T>,
     pub has_more: bool,
     pub total_count: Option<u64>,
@@ -116,6 +117,7 @@ pub struct List<T> {
 impl<T: Clone> Clone for List<T> {
     fn clone(&self) -> Self {
         List {
+            object: self.object.clone(),
             data: self.data.clone(),
             has_more: self.has_more,
             total_count: self.total_count,
@@ -170,6 +172,7 @@ impl<T: Paginate + DeserializeOwned + Send + 'static> List<T> {
             List::get_next(client, &self.url, last_id)
         } else {
             ok(List {
+                object: self.object.clone(),
                 data: Vec::new(),
                 has_more: false,
                 total_count: self.total_count,

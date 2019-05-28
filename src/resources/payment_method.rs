@@ -11,6 +11,8 @@ use crate::resources::{
     Checks,
     CardType, CardBrand,
     CardParamsShort,
+    CustomerShippingDetails,
+    PaymentSourceParams,
     ThreeDSecureUsage, Wallet,
 };
 // use crate::ids::{PaymentMethodId, CustomerId};
