@@ -42,14 +42,14 @@ impl PaymentMethod {
         client.post_form("/payment_methods", params)
     }
 
-    /// Retreives a PaymentMethod by its Id which starts with "pm_".
+    /// Retrieves a PaymentMethod by its Id which starts with "pm_".
     ///
     /// curl https://api.stripe.com/v1/payment_methods/pm_1EeVl72eZvKYlo2CBjFfYbm8 \
     ///
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
     pub fn retrieve(
         client: &Client,
-        params: PaymentMethodRetreiveParams
+        params: PaymentMethodId
     ) -> Response<PaymentMethod> {
         println!("stripe-rs params: {:?}", params);
         client.get(&format!("/payment_methods/{}", params))
