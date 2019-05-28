@@ -187,7 +187,7 @@ pub struct ListPaymentMethodsParams {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AttachPaymentMethodsParams {
+pub struct AttachPaymentMethodParams {
     pub customer: String,
     // customer_id: cus_F91mxXM992j41y
 }
