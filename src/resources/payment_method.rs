@@ -64,8 +64,8 @@ impl PaymentMethod {
         client: &Client,
         params: PaymentMethodRetrieveParams,
     ) -> Response<PaymentMethodResponse> {
-        println!("retrieve(): stripe-rs id: {:?}", params.id);
-        client.get(&format!("/payment_methods/{}", params.id))
+        println!("retrieve(): stripe-rs id: {:?}", params.payment_method_id);
+        client.get(&format!("/payment_methods/{}", params.payment_method_id))
     }
 
     /// Updates a PaymentMethod
@@ -96,8 +96,8 @@ impl PaymentMethod {
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
     pub fn list_customer_payment_methods(
         client: &Client,
-        params: ListCustomerPaymentMethodsParams,
-    ) -> Response<ListCustomerPaymentMethodsResponse> {
+        params: ListPaymentMethodsParams,
+    ) -> Response<ListPaymentMethodsResponse> {
         client.get_query("/payment_methods", &params)
     }
 
@@ -112,7 +112,7 @@ impl PaymentMethod {
     pub fn attach_customer_payment_method(
         client: &Client,
         payment_method_id: String,
-        params: AttachCustomerPaymentMethodsParams,
+        params: AttachPaymentMethodsParams,
     ) -> Response<PaymentMethodResponse> {
         client.post_form(
             &format!("/payment_methods/{}/attach", payment_method_id),
@@ -141,7 +141,7 @@ impl PaymentMethod {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaymentMethodRetrieveParams {
-    id: String
+    payment_method_id: String
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -175,7 +175,7 @@ pub struct PaymentMethodUpdateParams {
 
 /// https://stripe.com/docs/api/payment_methods/list?lang=curl
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ListCustomerPaymentMethodsParams {
+pub struct ListPaymentMethodsParams {
     pub customer: String,
     pub r#type: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -187,7 +187,7 @@ pub struct ListCustomerPaymentMethodsParams {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AttachCustomerPaymentMethodsParams {
+pub struct AttachPaymentMethodsParams {
     pub customer: String,
     // customer_id: cus_F91mxXM992j41y
 }
@@ -233,7 +233,7 @@ pub struct PaymentMethodCardResponse {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ListCustomerPaymentMethodsResponse {
+pub struct ListPaymentMethodsResponse {
     pub object: String,
     pub url: String,
     pub has_more: bool,
