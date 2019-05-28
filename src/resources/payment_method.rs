@@ -36,7 +36,7 @@ impl PaymentMethod {
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
     pub fn create(
         client: &Client,
-        params: CreatePaymentMethodParams
+        params: PaymentMethodCreateParams
     ) -> Response<PaymentMethod> {
         println!("stripe-rs params: {:?}", params);
         client.post_form("/payment_methods", params)
@@ -49,18 +49,18 @@ impl PaymentMethod {
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
     pub fn retrieve(
         client: &Client,
-        payment_method_id: PaymentMethodId
+        params: PaymentMethodRetreiveParams
     ) -> Response<PaymentMethod> {
-        println!("stripe-rs params: {:?}", payment_method_id);
-        client.get(&format!("/payment_methods/{}", payment_method_id))
+        println!("stripe-rs params: {:?}", params);
+        client.get(&format!("/payment_methods/{}", params))
     }
 
     pub fn retrieve_str(
         client: &Client,
-        payment_method_id: String
+        params: String
     ) -> Response<PaymentMethod> {
-        println!("stripe-rs params: {:?}", payment_method_id);
-        client.get(&format!("/payment_methods/{}", payment_method_id))
+        println!("stripe-rs params: {:?}", params);
+        client.get(&format!("/payment_methods/{}", params))
     }
 
     /// Updates a PaymentMethod
@@ -73,7 +73,7 @@ impl PaymentMethod {
     pub fn update(
         client: &Client,
         payment_method_id: PaymentMethodId,
-        params: UpdatePaymentMethodParams
+        params: PaymentMethodUpdateParams
     ) -> Response<PaymentMethod> {
         client.post_form(
             &format!("/payment_methods/{}", payment_method_id),
@@ -130,9 +130,14 @@ impl PaymentMethod {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreatePaymentMethodParams {
+pub struct PaymentMethodRetrieveParams {
+    id: PaymentMethodId
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PaymentMethodCreateParams {
     pub r#type: PaymentMethodType,
-    pub card: CreatePaymentMethodCardParams,
+    pub card: PaymentMethodCardParams,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -140,7 +145,7 @@ pub struct CreatePaymentMethodParams {
 }
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
-pub struct CreatePaymentMethodCardParams {
+pub struct PaymentMethodCardParams {
     pub exp_month: String, // eg. "12"
     pub exp_year: String,  // eg. "17" or 2017"
     pub number: String,       // card number
@@ -151,7 +156,7 @@ pub struct CreatePaymentMethodCardParams {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct UpdatePaymentMethodParams {
+pub struct PaymentMethodUpdateParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
