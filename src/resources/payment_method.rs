@@ -72,7 +72,7 @@ impl PaymentMethod {
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
     pub fn update(
         client: &Client,
-        payment_method_id: PaymentMethodId,
+        payment_method_id: String,
         params: PaymentMethodUpdateParams
     ) -> Response<PaymentMethod> {
         client.post_form(
@@ -105,7 +105,7 @@ impl PaymentMethod {
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
     pub fn attach_customer_payment_method(
         client: &Client,
-        payment_method_id: PaymentMethodId,
+        payment_method_id: String,
         params: AttachCustomerPaymentMethodsParams,
     ) -> Response<PaymentMethodResponse> {
         client.post_form(
@@ -123,7 +123,7 @@ impl PaymentMethod {
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
     pub fn detach_customer_payment_method(
         client: &Client,
-        payment_method_id: PaymentMethodId,
+        payment_method_id: String,
     ) -> Response<PaymentMethodResponse> {
         client.post(&format!("/payment_methods/{}/detach", payment_method_id))
     }
