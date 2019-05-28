@@ -7,7 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::params::{Timestamp, Metadata};
 use crate::resources::{Address, Card, CardParamsShort };
-use crate::ids::{PaymentMethodId, CustomerId};
+// use crate::ids::{PaymentMethodId, CustomerId};
 use std::collections::HashMap;
 
 
@@ -37,8 +37,8 @@ impl PaymentMethod {
     pub fn create(
         client: &Client,
         params: PaymentMethodCreateParams
-    ) -> Response<PaymentMethod> {
-        println!("stripe-rs params: {:?}", params);
+    ) -> Response<PaymentMethodResponse> {
+        println!("create(): stripe-rs params: {:?}", params);
         client.post_form("/payment_methods", params)
     }
 
@@ -50,17 +50,9 @@ impl PaymentMethod {
     pub fn retrieve(
         client: &Client,
         params: PaymentMethodRetrieveParams,
-    ) -> Response<PaymentMethod> {
-        println!("===> stripe-rs id: {:?}", params.id);
+    ) -> Response<PaymentMethodResponse> {
+        println!("retrieve(): stripe-rs id: {:?}", params.id);
         client.get(&format!("/payment_methods/{}", params.id))
-    }
-
-    pub fn retrieve_str(
-        client: &Client,
-        params: String
-    ) -> Response<PaymentMethod> {
-        println!("===> stripe-rs params: {:?}", params);
-        client.get(&format!("/payment_methods/{}", params))
     }
 
     /// Updates a PaymentMethod
@@ -75,6 +67,7 @@ impl PaymentMethod {
         payment_method_id: String,
         params: PaymentMethodUpdateParams
     ) -> Response<PaymentMethod> {
+        println!("update(): stripe-rs params: {:?}", params);
         client.post_form(
             &format!("/payment_methods/{}", payment_method_id),
             params
