@@ -38,6 +38,7 @@ impl PaymentMethod {
         client: &Client,
         params: CreatePaymentMethodParams
     ) -> Response<PaymentMethod> {
+        println!("stripe-rs params: {:?}", params);
         client.post_form("/payment_methods", params)
     }
 
