@@ -49,17 +49,17 @@ impl PaymentMethod {
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
     pub fn retrieve(
         client: &Client,
-        params: PaymentMethodId
+        params: PaymentMethodRetrieveParams,
     ) -> Response<PaymentMethod> {
-        println!("stripe-rs params: {:?}", params);
-        client.get(&format!("/payment_methods/{}", params))
+        println!("===> stripe-rs id: {:?}", params.id);
+        client.get(&format!("/payment_methods/{}", params.id))
     }
 
     pub fn retrieve_str(
         client: &Client,
         params: String
     ) -> Response<PaymentMethod> {
-        println!("stripe-rs params: {:?}", params);
+        println!("===> stripe-rs params: {:?}", params);
         client.get(&format!("/payment_methods/{}", params))
     }
 
