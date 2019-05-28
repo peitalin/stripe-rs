@@ -112,7 +112,7 @@ impl PaymentMethod {
     pub fn attach_payment_method(
         client: &Client,
         payment_method_id: String,
-        params: AttachPaymentMethodsParams,
+        params: AttachPaymentMethodParams,
     ) -> Response<PaymentMethodResponse> {
         client.post_form(
             &format!("/payment_methods/{}/attach", payment_method_id),
