@@ -160,8 +160,6 @@ pub struct PaymentMethodCardParams {
     pub exp_year: String,  // eg. "17" or 2017"
     pub number: String,       // card number
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>, // cardholder's full name
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc: Option<String>,  // card security code
 }
 
