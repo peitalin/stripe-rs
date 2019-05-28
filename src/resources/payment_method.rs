@@ -94,7 +94,7 @@ impl PaymentMethod {
     ///   -G
     ///
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
-    pub fn list_customer_payment_methods(
+    pub fn list_payment_methods(
         client: &Client,
         params: ListPaymentMethodsParams,
     ) -> Response<ListPaymentMethodsResponse> {
@@ -109,7 +109,7 @@ impl PaymentMethod {
     ///   -d customer=cus_F8nLAuoRpovfMk
     ///
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
-    pub fn attach_customer_payment_method(
+    pub fn attach_payment_method(
         client: &Client,
         payment_method_id: String,
         params: AttachPaymentMethodsParams,
@@ -127,7 +127,7 @@ impl PaymentMethod {
     ///   -X POST
     ///
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
-    pub fn detach_customer_payment_method(
+    pub fn detach_payment_method(
         client: &Client,
         payment_method_id: String,
     ) -> Response<PaymentMethodResponse> {
