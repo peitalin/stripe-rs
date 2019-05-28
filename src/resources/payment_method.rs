@@ -54,6 +54,13 @@ impl PaymentMethod {
         client.get(&format!("/payment_methods/{}", payment_method_id))
     }
 
+    pub fn retrieve_str(
+        client: &Client,
+        payment_method_id: String
+    ) -> Response<PaymentMethod> {
+        client.get(&format!("/payment_methods/{}", payment_method_id))
+    }
+
     /// Updates a PaymentMethod
     ///
     /// curl https://api.stripe.com/v1/payment_methods/pm_1EeVl72eZvKYlo2CBjFfYbm8 \
