@@ -66,7 +66,7 @@ impl PaymentMethod {
         client: &Client,
         payment_method_id: String,
         params: PaymentMethodUpdateParams
-    ) -> Response<PaymentMethod> {
+    ) -> Response<PaymentMethodResponse> {
         println!("update(): stripe-rs params: {:?}", params);
         client.post_form(
             &format!("/payment_methods/{}", payment_method_id),
