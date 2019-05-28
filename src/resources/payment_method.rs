@@ -175,15 +175,15 @@ pub enum PaymentMethodType {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaymentMethodResponse {
-  pub id: String,
-  pub object: String,
-  pub billing_details: BillingDetails,
-  pub card: Card,
-  pub created: Timestamp,
-  pub customer: String,
-  pub livemode: bool,
-  pub metadata: Metadata,
-  pub r#type: String,
+  pub id: Option<String>,
+  pub object: Option<String>,
+  pub billing_details: Option<BillingDetails>,
+  pub card: Option<Card>,
+  pub created: Option<Timestamp>,
+  pub customer: Option<String>,
+  pub livemode: Option<bool>,
+  pub metadata: Option<Metadata>,
+  pub r#type: Option<String>,
 }
 
 /// https://stripe.com/docs/api/payment_methods/list?lang=curl
