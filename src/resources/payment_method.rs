@@ -131,7 +131,7 @@ impl PaymentMethod {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaymentMethodRetrieveParams {
-    id: PaymentMethodId
+    id: String
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -182,12 +182,12 @@ pub enum PaymentMethodType {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaymentMethodResponse {
-  pub id: PaymentMethodId,
+  pub id: String,
   pub object: String,
   pub billing_details: BillingDetails,
   pub card: Card,
   pub created: Timestamp,
-  pub customer: CustomerId,
+  pub customer: String,
   pub livemode: bool,
   pub metadata: Metadata,
   pub r#type: String,
@@ -196,7 +196,7 @@ pub struct PaymentMethodResponse {
 /// https://stripe.com/docs/api/payment_methods/list?lang=curl
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ListCustomerPaymentMethodsParams {
-    pub customer: CustomerId,
+    pub customer: String,
     pub r#type: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ending_before: Option<String>,
@@ -216,5 +216,5 @@ pub struct ListCustomerPaymentMethodsResponse {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AttachCustomerPaymentMethodsParams {
-    pub customer_id: CustomerId,
+    pub customer_id: String,
 }
