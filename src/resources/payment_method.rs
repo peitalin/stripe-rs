@@ -51,6 +51,7 @@ impl PaymentMethod {
         client: &Client,
         payment_method_id: PaymentMethodId
     ) -> Response<PaymentMethod> {
+        println!("stripe-rs params: {:?}", payment_method_id);
         client.get(&format!("/payment_methods/{}", payment_method_id))
     }
 
@@ -58,6 +59,7 @@ impl PaymentMethod {
         client: &Client,
         payment_method_id: String
     ) -> Response<PaymentMethod> {
+        println!("stripe-rs params: {:?}", payment_method_id);
         client.get(&format!("/payment_methods/{}", payment_method_id))
     }
 
