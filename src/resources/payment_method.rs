@@ -6,7 +6,13 @@ use serde_derive::{Deserialize, Serialize};
 // use crate::resources::{BankAccount, BankAccountParams, Card, CardParams, Source};
 
 use crate::params::{Timestamp, Metadata};
-use crate::resources::{Address, Card, CardParamsShort };
+use crate::resources::{
+    Address,
+    Checks,
+    CardType, CardBrand,
+    CardParamsShort,
+    ThreeDSecureUsage, Wallet,
+};
 // use crate::ids::{PaymentMethodId, CustomerId};
 use std::collections::HashMap;
 
@@ -15,8 +21,15 @@ use std::collections::HashMap;
 pub struct PaymentMethod {
     pub r#type: PaymentMethodType,
     pub billing_details: BillingDetails,
-    pub card: Card,
+    pub card: PaymentMethodCardResponse,
     pub metadata: Option<HashMap<String, String>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodType {
+    Card,
+    CardPresent
 }
 
 impl PaymentMethod {
@@ -122,6 +135,10 @@ impl PaymentMethod {
     }
 }
 
+//////////////////////////
+//// Arguments and Params
+/////////////////////////
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaymentMethodRetrieveParams {
     id: String
@@ -158,34 +175,6 @@ pub struct PaymentMethodUpdateParams {
     pub metadata: Option<Metadata>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct BillingDetails {
-    pub address: Option<Address>,
-    pub email: Option<String>,
-    pub name: Option<String>,
-    pub phone: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum PaymentMethodType {
-    Card,
-    CardPresent
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PaymentMethodResponse {
-  pub id: Option<String>,
-  pub object: Option<String>,
-  pub billing_details: Option<BillingDetails>,
-  pub card: Option<Card>,
-  pub created: Option<Timestamp>,
-  pub customer: Option<String>,
-  pub livemode: Option<bool>,
-  pub metadata: Option<Metadata>,
-  pub r#type: Option<String>,
-}
-
 /// https://stripe.com/docs/api/payment_methods/list?lang=curl
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ListCustomerPaymentMethodsParams {
@@ -200,14 +189,54 @@ pub struct ListCustomerPaymentMethodsParams {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AttachCustomerPaymentMethodsParams {
+    pub customer_id: String,
+}
+
+//////////////////////////
+//// Responses
+/////////////////////////
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PaymentMethodResponse {
+  pub id: String,
+  pub object: String,
+  pub billing_details: BillingDetails,
+  pub card: PaymentMethodCardResponse,
+  pub created: Timestamp,
+  pub customer: Option<String>,
+  pub livemode: bool,
+  pub metadata: Option<Metadata>,
+  pub r#type: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BillingDetails {
+    pub address: Option<Address>,
+    pub email: Option<String>,
+    pub name: Option<String>,
+    pub phone: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodCardResponse {
+    pub brand: CardBrand,
+    pub checks: Option<Checks>,
+    pub country: String, // eg. "US"
+    pub exp_month: u32,
+    pub exp_year: u32,
+    pub fingerprint: String,
+    pub funding: CardType,
+    pub generated_from: Option<String>,
+    pub last4: String,
+    pub three_d_secure_usage: Option<ThreeDSecureUsage>,
+    pub wallet: Option<Wallet>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ListCustomerPaymentMethodsResponse {
     pub object: String,
     pub url: String,
     pub has_more: bool,
     pub data: Vec<PaymentMethodResponse>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AttachCustomerPaymentMethodsParams {
-    pub customer_id: String,
 }
