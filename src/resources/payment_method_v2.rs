@@ -146,8 +146,8 @@ impl PaymentMethod {
     /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
     pub fn list_payment_methods(
         client: &Client,
-        params: ListPaymentMethodsParams,
-    ) -> Response<ListPaymentMethodsResponse> {
+        params: PaymentMethodsListParams,
+    ) -> Response<PaymentMethodsListResponse> {
         client.get_query("/payment_methods", &params)
     }
 
@@ -162,7 +162,7 @@ impl PaymentMethod {
     pub fn attach_payment_method(
         client: &Client,
         payment_method_id: String,
-        params: AttachPaymentMethodParams,
+        params: PaymentMethodAttachParams,
     ) -> Response<PaymentMethodResponse> {
         client.post_form(
             &format!("/payment_methods/{}/attach", payment_method_id),
