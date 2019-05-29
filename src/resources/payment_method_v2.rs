@@ -225,7 +225,7 @@ pub struct PaymentMethodUpdateParams {
 
 /// https://stripe.com/docs/api/payment_methods/list?lang=curl
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ListPaymentMethodsParams {
+pub struct PaymentMethodsListParams {
     pub customer: String,
     pub r#type: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -237,7 +237,7 @@ pub struct ListPaymentMethodsParams {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AttachPaymentMethodParams {
+pub struct PaymentMethodAttachParams {
     pub customer: String,
     // customer_id: cus_F91mxXM992j41y
 }
@@ -275,7 +275,7 @@ pub struct PaymentMethodCardResponse {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ListPaymentMethodsResponse {
+pub struct PaymentMethodsListResponse {
     pub object: String,
     pub url: String,
     pub has_more: bool,
