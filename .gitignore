@@ -3,10 +3,3 @@ target/
 Cargo.lock
 stripe-mock/
 
-src/resources/card\.rs-base
-
-src/resources/card\.rs-ours
-
-src/resources/card\.rs-theirs
-
-src/resources/payment_method\.rs
