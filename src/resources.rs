@@ -100,7 +100,11 @@ pub use self::refund::*;
 pub use self::reserve_transaction::*;
 pub use self::review::*;
 pub use self::scheduled_query_run::*;
-pub use self::session::*;
+pub use self::session::{
+    Session,
+    LineItem,
+    SessionParams,
+};
 pub use self::sku::*;
 pub use self::source::*;
 pub use self::subscription::*;
