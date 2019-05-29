@@ -89,6 +89,7 @@ pub use self::order_item::*;
 pub use self::order_return::*;
 pub use self::payment_intent::*;
 pub use self::payment_method_v2::*;
+pub use self::payment_method::{CardDetails, CardPresent};
 pub use self::payment_source::*;
 pub use self::payout::*;
 pub use self::plan::*;

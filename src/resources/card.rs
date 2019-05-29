@@ -1,6 +1,5 @@
-use crate::params::{Metadata, Expandable, Object};
 use crate::ids::CardId;
-use crate::resources::{Account, Currency, Customer, Recipient};
+use crate::resources::{Account, Currency, Customer, Recipient, Address};
 use crate::params::{Expandable, Metadata, Object};
 use serde_derive::{Deserialize, Serialize};
 
@@ -60,8 +59,8 @@ pub struct Card {
     /// Card brand.
     ///
     /// Can be `American Express`, `Diners Club`, `Discover`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
-    pub brand: Option<CardBrand>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub brand: Option<CardBrand>,
 
     /// Two-letter ISO code representing the country of the card.
     ///
@@ -108,8 +107,9 @@ pub struct Card {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
 
-    pub last4: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub last4: Option<String>,
+
     /// Card funding type.
     ///
     /// Can be `credit`, `debit`, `prepaid`, or `unknown`.

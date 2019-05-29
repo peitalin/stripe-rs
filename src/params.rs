@@ -133,7 +133,13 @@ pub struct List<T> {
 
 impl<T> Default for List<T> {
     fn default() -> Self {
-        List { data: Vec::new(), has_more: false, total_count: None, url: String::new() }
+        List {
+            object: String::new(),
+            data: Vec::new(),
+            has_more: false,
+            total_count: None,
+            url: String::new()
+        }
     }
 }
 

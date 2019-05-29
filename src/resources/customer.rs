@@ -2,8 +2,8 @@ use crate::config::{Client, Response};
 use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId};
 use crate::params::{Deleted, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BankAccountVerifyParams,
-    Currency, Deleted, Discount, PaymentSource,
+    Address, BankAccount,
+    Currency, Discount, PaymentSource,
     PaymentSourceParams, Source, Subscription,
     CustomerResponse,
     CustomerUpdateParams,

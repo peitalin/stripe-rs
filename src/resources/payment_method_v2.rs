@@ -5,24 +5,74 @@ use serde_derive::{Deserialize, Serialize};
 // use crate::params::Identifiable;
 // use crate::resources::{BankAccount, BankAccountParams, Card, CardParams, Source};
 
-use crate::params::{Timestamp, Metadata};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
-    Address,
     Checks,
-    CardType, CardBrand,
+    CardType,
+    CardBrand,
+    CardDetails,
+    CardPresent,
     CardParamsShort,
-    ThreeDSecureUsage, Wallet,
+    ThreeDSecureUsage,
+    Wallet,
 };
-// use crate::ids::{PaymentMethodId, CustomerId};
+use crate::resources::{Address, BillingDetails, Customer};
+use crate::ids::{PaymentMethodId};
 use std::collections::HashMap;
 
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+
+/// The resource representing a Stripe "PaymentMethod".
+///
+/// For more details see [https://stripe.com/docs/api/payment_methods/object](https://stripe.com/docs/api/payment_methods/object).
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethod {
-    pub r#type: PaymentMethodType,
+    /// Unique identifier for the object.
+    pub id: PaymentMethodId,
+
     pub billing_details: BillingDetails,
-    pub card: PaymentMethodCardResponse,
-    pub metadata: Option<HashMap<String, String>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<CardDetails>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_present: Option<CardPresent>,
+
+    /// Time at which the object was created.
+    ///
+    /// Measured in seconds since the Unix epoch.
+    pub created: Timestamp,
+
+    /// The ID of the Customer to which this PaymentMethod is saved.
+    ///
+    /// This will not be set when the PaymentMethod has not been saved to a Customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<Expandable<Customer>>,
+
+    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    pub livemode: bool,
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    pub metadata: Metadata,
+
+    /// The type of the PaymentMethod.
+    ///
+    /// An additional hash is included on the PaymentMethod with a name matching this value.
+    /// It contains additional information specific to the PaymentMethod type.
+    #[serde(rename = "type")]
+    pub type_: PaymentMethodType,
+}
+
+impl Object for PaymentMethod {
+    type Id = PaymentMethodId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "payment_method"
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -207,14 +257,6 @@ pub struct PaymentMethodResponse {
   pub livemode: bool,
   pub metadata: Option<Metadata>,
   pub r#type: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct BillingDetails {
-    pub address: Option<Address>,
-    pub email: Option<String>,
-    pub name: Option<String>,
-    pub phone: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
