@@ -227,7 +227,8 @@ pub struct PaymentMethodUpdateParams {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaymentMethodsListParams {
     pub customer: String,
-    pub r#type: String,
+    #[serde(rename = "type")]
+    pub r#type: PaymentMethodType,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -248,15 +249,15 @@ pub struct PaymentMethodAttachParams {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaymentMethodResponse {
-  pub id: String,
-  pub object: String,
-  pub billing_details: BillingDetails,
-  pub card: PaymentMethodCardResponse,
-  pub created: Timestamp,
-  pub customer: Option<String>,
-  pub livemode: bool,
-  pub metadata: Option<Metadata>,
-  pub r#type: String,
+    pub id: String,
+    pub object: String,
+    pub billing_details: BillingDetails,
+    pub card: PaymentMethodCardResponse,
+    pub created: Timestamp,
+    pub customer: Option<String>,
+    pub livemode: bool,
+    pub metadata: Option<Metadata>,
+    pub r#type: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
