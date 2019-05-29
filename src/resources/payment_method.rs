@@ -1,241 +1,465 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
 
 use crate::config::{Client, Response};
+use crate::ids::{CustomerId, PaymentMethodId};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
+use crate::resources::{Address, BillingDetails, Customer, PaymentMethodDetails};
 use serde_derive::{Deserialize, Serialize};
-// use crate::ids::{SourceId, TokenId};
-// use crate::params::Identifiable;
-// use crate::resources::{BankAccount, BankAccountParams, Card, CardParams, Source};
 
-use crate::params::{Timestamp, Metadata};
-use crate::resources::{
-    Address,
-    Checks,
-    CardType, CardBrand,
-    CardParamsShort,
-    ThreeDSecureUsage, Wallet,
-};
-// use crate::ids::{PaymentMethodId, CustomerId};
-use std::collections::HashMap;
-
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
+/// The resource representing a Stripe "PaymentMethod".
+///
+/// For more details see [https://stripe.com/docs/api/payment_methods/object](https://stripe.com/docs/api/payment_methods/object).
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethod {
-    pub r#type: PaymentMethodType,
-    pub billing_details: BillingDetails,
-    pub card: PaymentMethodCardResponse,
-    pub metadata: Option<HashMap<String, String>>,
-}
+    /// Unique identifier for the object.
+    pub id: PaymentMethodId,
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum PaymentMethodType {
-    Card,
-    CardPresent
+    pub billing_details: BillingDetails,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<CardDetails>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_present: Option<CardPresent>,
+
+    /// Time at which the object was created.
+    ///
+    /// Measured in seconds since the Unix epoch.
+    pub created: Timestamp,
+
+    /// The ID of the Customer to which this PaymentMethod is saved.
+    ///
+    /// This will not be set when the PaymentMethod has not been saved to a Customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<Expandable<Customer>>,
+
+    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    pub livemode: bool,
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    pub metadata: Metadata,
+
+    /// The type of the PaymentMethod.
+    ///
+    /// An additional hash is included on the PaymentMethod with a name matching this value.
+    /// It contains additional information specific to the PaymentMethod type.
+    #[serde(rename = "type")]
+    pub type_: PaymentMethodType,
 }
 
 impl PaymentMethod {
-
-    /// Creates a new PaymentMethod.
-    ///
-    /// curl https://api.stripe.com/v1/payment_methods \
-    /// -u sk_test_4eC39HqLyjWDarjtT1zdp7dc: \
-    /// -X POST \
-    /// -d type=card \
-    /// -d card[number]=4242424242424242 \
-    /// -d card[exp_month]=12 \
-    /// -d card[exp_year]=2020 \
-    /// -d card[cvc]=123 \
-    /// -d billing_details[email]=andrew.yang@yanggang.com
-    ///
-    /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
-    pub fn create(
-        client: &Client,
-        params: PaymentMethodCreateParams
-    ) -> Response<PaymentMethodResponse> {
-        println!("create(): stripe-rs params: {:?}", params);
-        client.post_form("/payment_methods", params)
-    }
-
-    /// Retrieves a PaymentMethod by its Id which starts with "pm_".
-    ///
-    /// curl https://api.stripe.com/v1/payment_methods/pm_1EeVl72eZvKYlo2CBjFfYbm8 \
-    ///
-    /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
-    pub fn retrieve(
-        client: &Client,
-        params: PaymentMethodRetrieveParams,
-    ) -> Response<PaymentMethodResponse> {
-        println!("retrieve(): stripe-rs id: {:?}", params.payment_method_id);
-        client.get(&format!("/payment_methods/{}", params.payment_method_id))
-    }
-
-    /// Updates a PaymentMethod
-    ///
-    /// curl https://api.stripe.com/v1/payment_methods/pm_1EeVl72eZvKYlo2CBjFfYbm8 \
-    ///   -u sk_test_4eC39HqLyjWDarjtT1zdp7dc: \
-    ///   -d metadata[order_id]=6735
-    ///
-    /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
-    pub fn update(
-        client: &Client,
-        payment_method_id: String,
-        params: PaymentMethodUpdateParams
-    ) -> Response<PaymentMethodResponse> {
-        println!("update(): stripe-rs params: {:?}", params);
-        client.post_form(
-            &format!("/payment_methods/{}", payment_method_id),
-            params
-        )
-    }
-
-    /// Lists all the PaymentMethods of a Customer
-    ///
-    /// curl "https://api.stripe.com/v1/payment_methods?customer=cus_F8nLAuoRpovfMk&type=card" \
-    ///   -u sk_test_4eC39HqLyjWDarjtT1zdp7dc: \
-    ///   -G
-    ///
-    /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
-    pub fn list_payment_methods(
-        client: &Client,
-        params: ListPaymentMethodsParams,
-    ) -> Response<ListPaymentMethodsResponse> {
+    /// Returns a list of PaymentMethods for a given Customer.
+    pub fn list(client: &Client, params: ListPaymentMethods<'_>) -> Response<List<PaymentMethod>> {
         client.get_query("/payment_methods", &params)
     }
 
-    /// Attaches a new PaymentMethod to a Customer
+    /// Creates a PaymentMethod object.
     ///
-    /// curl https://api.stripe.com/v1/payment_methods/pm_card_visa/attach \
-    ///   -u sk_test_4eC39HqLyjWDarjtT1zdp7dc: \
-    ///   -X POST \
-    ///   -d customer=cus_F8nLAuoRpovfMk
-    ///
-    /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
-    pub fn attach_payment_method(
-        client: &Client,
-        payment_method_id: String,
-        params: AttachPaymentMethodParams,
-    ) -> Response<PaymentMethodResponse> {
-        client.post_form(
-            &format!("/payment_methods/{}/attach", payment_method_id),
-            &params
-        )
+    /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.
+    pub fn create(client: &Client, params: CreatePaymentMethod<'_>) -> Response<PaymentMethod> {
+        client.post_form("/payment_methods", &params)
     }
 
-    /// Detaches a PaymentMethod from a Customer
-    ///
-    /// curl https://api.stripe.com/v1/payment_methods/pm_1EeVl72eZvKYlo2CBjFfYbm8/detach \
-    ///   -u sk_test_4eC39HqLyjWDarjtT1zdp7dc: \
-    ///   -X POST
-    ///
-    /// For more details see [https://stripe.com/docs/payments/payment-methods/saving](https://stripe.com/docs/payments/payment-methods/saving).
-    pub fn detach_payment_method(
+    /// Retrieves a PaymentMethod object.
+    pub fn retrieve(
         client: &Client,
-        payment_method_id: String,
-    ) -> Response<PaymentMethodResponse> {
-        client.post(&format!("/payment_methods/{}/detach", payment_method_id))
+        id: &PaymentMethodId,
+        expand: &[&str],
+    ) -> Response<PaymentMethod> {
+        client.get_query(&format!("/payment_methods/{}", id), &Expand { expand })
+    }
+
+    /// Updates a PaymentMethod object.
+    ///
+    /// A PaymentMethod must be attached a customer to be updated.
+    pub fn update(
+        client: &Client,
+        id: &PaymentMethodId,
+        params: UpdatePaymentMethod<'_>,
+    ) -> Response<PaymentMethod> {
+        client.post_form(&format!("/payment_methods/{}", id), &params)
     }
 }
 
-//////////////////////////
-//// Arguments and Params
-/////////////////////////
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PaymentMethodRetrieveParams {
-    payment_method_id: String
+impl Object for PaymentMethod {
+    type Id = PaymentMethodId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "payment_method"
+    }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PaymentMethodCreateParams {
-    pub r#type: PaymentMethodType,
-    pub card: PaymentMethodCardParams,
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CardDetails {
+    /// Card brand.
+    ///
+    /// Can be `amex`, `diners`, `discover`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    pub brand: String,
+
+    /// Checks on Card address and CVC if provided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_details: Option<BillingDetails>,
+    pub checks: Option<PaymentMethodCardChecks>,
+
+    /// Two-letter ISO code representing the country of the card.
+    ///
+    /// You could use this attribute to get a sense of the international breakdown of cards you've collected.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<HashMap<String, String>>,
+    pub country: Option<String>,
+
+    /// Two-digit number representing the card's expiration month.
+    pub exp_month: i64,
+
+    /// Four-digit number representing the card's expiration year.
+    pub exp_year: i64,
+
+    /// Uniquely identifies this particular card number.
+    ///
+    /// You can use this attribute to check whether two customers who've signed up with you are using the same card number, for example.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<String>,
+
+    /// Card funding type.
+    ///
+    /// Can be `credit`, `debit`, `prepaid`, or `unknown`.
+    pub funding: String,
+
+    /// Details of the original PaymentMethod that created this object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub generated_from: Option<PaymentMethodCardGeneratedCard>,
+
+    /// The last four digits of the card.
+    pub last4: String,
+
+    /// Contains details on how this Card maybe be used for 3D Secure authentication.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub three_d_secure_usage: Option<ThreeDSecureUsage>,
+
+    /// If this Card is part of a card wallet, this contains the details of the card wallet.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wallet: Option<WalletDetails>,
 }
 
-#[derive(Clone, Debug, Default, Serialize, Deserialize)]
-pub struct PaymentMethodCardParams {
-    pub exp_month: String, // eg. "12"
-    pub exp_year: String,  // eg. "17" or 2017"
-    pub number: String,       // card number
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodCardChecks {
+    /// If a address line1 was provided, results of the check, one of 'pass', 'failed', 'unavailable' or 'unchecked'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cvc: Option<String>,  // card security code
+    pub address_line1_check: Option<String>,
+
+    /// If a address postal code was provided, results of the check, one of 'pass', 'failed', 'unavailable' or 'unchecked'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_postal_code_check: Option<String>,
+
+    /// If a CVC was provided, results of the check, one of 'pass', 'failed', 'unavailable' or 'unchecked'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cvc_check: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PaymentMethodUpdateParams {
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodCardGeneratedCard {
+    /// The charge that created this object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_details: Option<BillingDetails>,
+    pub charge: Option<String>,
+
+    /// Transaction-specific details of the payment method used in the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<CardParamsShort>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<Metadata>,
+    pub payment_method_details: Option<PaymentMethodDetails>,
 }
 
-/// https://stripe.com/docs/api/payment_methods/list?lang=curl
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ListPaymentMethodsParams {
-    pub customer: String,
-    pub r#type: String,
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CardPresent {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub amex_express_checkout: Option<WalletAmexExpressCheckout>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i32>,
+    pub apple_pay: Option<WalletApplePay>,
+
+    /// (For tokenized numbers only.) The last four digits of the device account number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub dynamic_last4: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_pay: Option<WalletGooglePay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub masterpass: Option<WalletMasterpass>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub samsung_pay: Option<WalletSamsungPay>,
+
+    /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, or `visa_checkout`.
+    ///
+    /// An additional hash is included on the Wallet subhash with a name matching this value.
+    /// It contains additional information specific to the card wallet type.
+    #[serde(rename = "type")]
+    pub type_: WalletDetailsType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visa_checkout: Option<WalletVisaCheckout>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AttachPaymentMethodParams {
-    pub customer: String,
-    // customer_id: cus_F91mxXM992j41y
-}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletAmexExpressCheckout {}
 
-//////////////////////////
-//// Responses
-/////////////////////////
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletApplePay {}
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PaymentMethodResponse {
-  pub id: String,
-  pub object: String,
-  pub billing_details: BillingDetails,
-  pub card: PaymentMethodCardResponse,
-  pub created: Timestamp,
-  pub customer: Option<String>,
-  pub livemode: bool,
-  pub metadata: Option<Metadata>,
-  pub r#type: String,
-}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletGooglePay {}
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct BillingDetails {
-    pub address: Option<Address>,
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletMasterpass {
+    /// Owner's verified billing address.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_address: Option<Address>,
+
+    /// Owner's verified email.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
+
+    /// Owner's verified full name.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+
+    /// Owner's verified shipping address.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_address: Option<Address>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletSamsungPay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletVisaCheckout {
+    /// Owner's verified billing address.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_address: Option<Address>,
+
+    /// Owner's verified email.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    /// Owner's verified full name.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    /// Owner's verified shipping address.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_address: Option<Address>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ThreeDSecureUsage {
+    /// Whether 3D Secure is supported on this card.
+    pub supported: bool,
+}
+
+/// The parameters for `PaymentMethod::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreatePaymentMethod<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing_details: Option<BillingDetails>,
+
+    /// The `Customer` to whom the original PaymentMethod is attached.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<CustomerId>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// The PaymentMethod to share.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_method: Option<PaymentMethodId>,
+
+    /// The type of the PaymentMethod.
+    ///
+    /// An additional hash is included on the PaymentMethod with a name matching this value.
+    /// It contains additional information specific to the PaymentMethod type.
+    /// Required unless `payment_method` is specified (see the [Shared PaymentMethods](https://stripe.com/docs/payments/payment-methods/connect#shared-paymentmethods) guide).
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_: Option<PaymentMethodType>,
+}
+
+impl<'a> CreatePaymentMethod<'a> {
+    pub fn new() -> Self {
+        CreatePaymentMethod {
+            billing_details: Default::default(),
+            customer: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            payment_method: Default::default(),
+            type_: Default::default(),
+        }
+    }
+}
+
+/// The parameters for `PaymentMethod::list`.
+#[derive(Clone, Debug, Serialize)]
+pub struct ListPaymentMethods<'a> {
+    /// The ID of the customer whose PaymentMethods will be retrieved.
+    customer: CustomerId,
+
+    /// A cursor for use in pagination.
+    ///
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ending_before: Option<&'a PaymentMethodId>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// A limit on the number of objects to be returned.
+    ///
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<u64>,
+
+    /// A cursor for use in pagination.
+    ///
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    starting_after: Option<&'a PaymentMethodId>,
+
+    /// A required filter on the list, based on the object `type` field.
+    #[serde(rename = "type")]
+    type_: PaymentMethodType,
+}
+
+impl<'a> ListPaymentMethods<'a> {
+    pub fn new(customer: CustomerId, type_: PaymentMethodType) -> Self {
+        ListPaymentMethods {
+            customer,
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+            type_,
+        }
+    }
+}
+
+/// The parameters for `PaymentMethod::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdatePaymentMethod<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing_details: Option<UpdatePaymentMethodBillingDetails>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+}
+
+impl<'a> UpdatePaymentMethod<'a> {
+    pub fn new() -> Self {
+        UpdatePaymentMethod {
+            billing_details: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodBillingDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<UpdatePaymentMethodBillingDetailsAddress>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodCardResponse {
-    pub brand: CardBrand,
-    pub checks: Option<Checks>,
-    pub country: String, // eg. "US"
-    pub exp_month: u32,
-    pub exp_year: u32,
-    pub fingerprint: String,
-    pub funding: CardType,
-    pub generated_from: Option<String>,
-    pub last4: String,
-    pub three_d_secure_usage: Option<ThreeDSecureUsage>,
-    pub wallet: Option<Wallet>,
+pub struct UpdatePaymentMethodBillingDetailsAddress {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ListPaymentMethodsResponse {
-    pub object: String,
-    pub url: String,
-    pub has_more: bool,
-    pub data: Vec<PaymentMethodResponse>,
+/// An enum representing the possible values of an `PaymentMethod`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodType {
+    Card,
+    CardPresent,
+}
+
+/// An enum representing the possible values of an `WalletDetails`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum WalletDetailsType {
+    AmexExpressCheckout,
+    ApplePay,
+    GooglePay,
+    Masterpass,
+    SamsungPay,
+    VisaCheckout,
 }
