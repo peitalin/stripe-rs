@@ -28,13 +28,13 @@ fn main() {
 
     // Output in a ~prettyprint format
     println!(
-        "Customer {{
-    id: {:?},
-    created: {:?},
-    default_source: {:?},
-    email: {:?},
-    ..
-}}",
+    "Customer {{
+        id: {:?},
+        created: {:?},
+        default_source: {:?},
+        email: {:?},
+        ..
+    }}",
         customer.id, customer.created, customer.default_source, customer.email
     );
 }
