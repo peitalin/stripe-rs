@@ -191,7 +191,7 @@ impl PaymentMethod {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaymentMethodRetrieveParams {
-    payment_method_id: String
+    pub payment_method_id: String
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
