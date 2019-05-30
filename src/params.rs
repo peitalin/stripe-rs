@@ -25,6 +25,8 @@ pub trait Object {
 pub struct Deleted<T> {
     /// Unique identifier for the object.
     pub id: T,
+    /// Unique identifier for the object.
+    pub object: String,
     /// Always true for a deleted object.
     pub deleted: bool,
 }
