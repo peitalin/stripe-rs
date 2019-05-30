@@ -374,7 +374,7 @@ pub struct TransferData {
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct PaymentIntentCreateParams {
     /// The list of payment types (e.g. card) that this PaymentIntent is allowed to use.
-    pub payment_method_types: Vec<PaymentIntentMethodType>,
+    pub payment_method_types: Option<Vec<PaymentIntentMethodType>>,
     pub amount: u64,
     pub currency: Currency,
 
