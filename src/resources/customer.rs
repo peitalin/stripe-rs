@@ -91,14 +91,14 @@ impl Customer {
     /// Creates a new customer.
     ///
     /// For more details see https://stripe.com/docs/api#create_customer.
-    pub fn create(client: &Client, params: CustomerParams<'_>) -> Response<Customer> {
+    pub fn create(client: &Client, params: CustomerParams<'_>) -> Response<CustomerResponse> {
         client.post_form("/customers", params)
     }
 
     /// Retrieves the details of a customer.
     ///
     /// For more details see https://stripe.com/docs/api#retrieve_customer.
-    pub fn retrieve(client: &Client, customer_id: &CustomerId) -> Response<Customer> {
+    pub fn retrieve(client: &Client, customer_id: &CustomerId) -> Response<CustomerResponse> {
         client.get(&format!("/customers/{}", customer_id))
     }
 
@@ -134,7 +134,7 @@ impl Customer {
     /// List customers.
     ///
     /// For more details see https://stripe.com/docs/api#list_customers.
-    pub fn list(client: &Client, params: CustomerListParams<'_>) -> Response<List<Customer>> {
+    pub fn list(client: &Client, params: CustomerListParams<'_>) -> Response<List<CustomerResponse>> {
         client.get_query("/customers", &params)
     }
 
