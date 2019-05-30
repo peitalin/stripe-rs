@@ -43,7 +43,8 @@ pub struct CustomerResponse {
     pub shipping: Option<CustomerShippingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sources: Option<List<HashMap<String, String>>>,
-    //   pub subscriptions: Option<List<HashMap<String, String>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscriptions: Option<List<HashMap<String, String>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
