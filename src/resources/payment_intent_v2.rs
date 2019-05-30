@@ -396,7 +396,7 @@ pub struct PaymentIntentCreateParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method: Option<PaymentMethodId>,
+    pub payment_method: Option<String>,
     /// The list of payment types (e.g. card) that this PaymentIntent is allowed to use.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<PaymentIntentMethodType>>,
@@ -434,7 +434,7 @@ pub struct PaymentIntentUpdateParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method: Option<PaymentMethodId>,
+    pub payment_method: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<PaymentIntentMethodType>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -455,7 +455,7 @@ pub struct PaymentIntentUpdateParams {
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct PaymentIntentConfirmParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method: Option<PaymentMethodId>,
+    pub payment_method: Option<String>,
     /// SECRET KEY ONLY
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<PaymentIntentMethodType>>,
