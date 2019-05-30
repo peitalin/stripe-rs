@@ -497,10 +497,10 @@ pub struct PaymentIntentListParams<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a PaymentIntentId>,
+    ending_before: Option<PaymentIntentId>,
 
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Expand::is_empty")]
+    #[serde(skip_serializing_if = "Expand::is_empty", skip_deserializing)]
     expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
@@ -514,7 +514,7 @@ pub struct PaymentIntentListParams<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a PaymentIntentId>,
+    starting_after: Option<PaymentIntentId>,
 }
 
 /// An enum representing the possible values of an `PaymentIntent`'s `cancellation_reason` field.
