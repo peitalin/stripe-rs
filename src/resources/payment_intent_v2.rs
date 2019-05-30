@@ -166,7 +166,7 @@ impl PaymentIntent {
     /// For more details see [https://stripe.com/docs/api/payment_intents/create](https://stripe.com/docs/api/payment_intents/create).
     pub fn create(
         client: &Client,
-        params: PaymentIntentCreateParams<'_>,
+        params: PaymentIntentCreateParams,
     ) -> Response<PaymentIntent> {
         client.post_form("/payment_intents", params)
     }
@@ -184,7 +184,7 @@ impl PaymentIntent {
     pub fn update(
         client: &Client,
         payment_intent_id: &str,
-        params: PaymentIntentUpdateParams<'_>,
+        params: PaymentIntentUpdateParams,
     ) -> Response<PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}", payment_intent_id), params)
     }
@@ -195,7 +195,7 @@ impl PaymentIntent {
     pub fn confirm(
         client: &Client,
         payment_intent_id: &str,
-        params: PaymentIntentConfirmParams<'_>,
+        params: PaymentIntentConfirmParams,
     ) -> Response<PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}/confirm", payment_intent_id), params)
     }
@@ -372,7 +372,7 @@ pub struct TransferData {
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/create](https://stripe.com/docs/api/payment_intents/create)
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
-pub struct PaymentIntentCreateParams<'a> {
+pub struct PaymentIntentCreateParams {
     /// The list of payment types (e.g. card) that this PaymentIntent is allowed to use.
     pub payment_method_types: Vec<PaymentIntentMethodType>,
     pub amount: u64,
@@ -388,36 +388,36 @@ pub struct PaymentIntentCreateParams<'a> {
     pub confirm: Option<bool>, // TODO: Is this the correct type?
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
+    pub customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<&'a str>,
+    pub on_behalf_of: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub receipt_email: Option<&'a str>,
+    pub receipt_email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_url: Option<&'a str>,
+    pub return_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub save_source_to_customer: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<Shipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<&'a str>,
+    pub source: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<&'a str>,
+    pub statement_descriptor: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<TransferData>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_group: Option<&'a str>,
+    pub transfer_group: Option<String>,
 }
 
 /// The set of parameters that can be used when updating a payment_intent object.
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/update](https://stripe.com/docs/api/payment_intents/update)
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
-pub struct PaymentIntentUpdateParams<'a> {
+pub struct PaymentIntentUpdateParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -425,38 +425,38 @@ pub struct PaymentIntentUpdateParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
+    pub customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub receipt_email: Option<&'a str>,
+    pub receipt_email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub save_source_to_customer: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<Shipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<&'a str>,
+    pub source: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_group: Option<&'a str>,
+    pub transfer_group: Option<String>,
 }
 
 /// The set of parameters that can be used when confirming a payment_intent object.
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/confirm](https://stripe.com/docs/api/payment_intents/confirm)
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
-pub struct PaymentIntentConfirmParams<'a> {
+pub struct PaymentIntentConfirmParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub receipt_email: Option<&'a str>,
+    pub receipt_email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_url: Option<&'a str>,
+    pub return_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub save_source_to_customer: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<Shipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<&'a str>,
+    pub source: Option<String>,
 }
 
 /// The set of parameters that can be used when capturing a payment_intent object.
