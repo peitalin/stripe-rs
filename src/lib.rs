@@ -72,6 +72,7 @@ mod resources;
 pub mod r#async;
 #[cfg(not(feature = "async"))]
 pub use crate::client::Client;
+
 pub use crate::error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
 pub use crate::ids::*;
 pub use crate::params::{Headers, List, Metadata, RangeBounds, RangeQuery, Timestamp, Deleted};
