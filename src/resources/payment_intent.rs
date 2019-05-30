@@ -371,7 +371,7 @@ pub struct TransferData {
 /// The set of parameters that can be used when creating a payment_intent object.
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/create](https://stripe.com/docs/api/payment_intents/create)
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct PaymentIntentCreateParams<'a> {
     /// The list of payment types (e.g. card) that this PaymentIntent is allowed to use.
     pub payment_method_types: Vec<PaymentIntentMethodType>,
@@ -416,7 +416,7 @@ pub struct PaymentIntentCreateParams<'a> {
 /// The set of parameters that can be used when updating a payment_intent object.
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/update](https://stripe.com/docs/api/payment_intents/update)
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct PaymentIntentUpdateParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<u64>,
@@ -445,7 +445,7 @@ pub struct PaymentIntentUpdateParams<'a> {
 /// The set of parameters that can be used when confirming a payment_intent object.
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/confirm](https://stripe.com/docs/api/payment_intents/confirm)
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct PaymentIntentConfirmParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub receipt_email: Option<&'a str>,
@@ -462,7 +462,7 @@ pub struct PaymentIntentConfirmParams<'a> {
 /// The set of parameters that can be used when capturing a payment_intent object.
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/capture](https://stripe.com/docs/api/payment_intents/capture)
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct PaymentIntentCaptureParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_to_capture: Option<u64>,
@@ -473,14 +473,14 @@ pub struct PaymentIntentCaptureParams {
 /// The set of parameters that can be used when canceling a payment_intent object.
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/cancel](https://stripe.com/docs/api/payment_intents/cancel)
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct PaymentIntentCancelParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cancellation_reason: Option<PaymentIntentCancellationReason>,
 }
 
 /// The parameters for `PaymentIntent::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct PaymentIntentListParams<'a> {
     /// A filter on the list, based on the object `created` field.
     ///
