@@ -35,9 +35,9 @@ pub struct CustomerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_vat_id: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_source: Option<PaymentSourceId>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_source: Option<PaymentSourceId>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
