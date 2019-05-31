@@ -4,6 +4,7 @@ use crate::resources::{
     CustomerShippingDetails,
     Currency,
     Discount,
+    PaymentSource,
 };
 use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -12,12 +13,15 @@ use std::collections::HashMap;
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct CustomerResponse {
     pub id: String,
+    pub account_balance: Option<i64>,
+    pub business_vat_id: Option<String>,
     pub object: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
     pub balance: i32,
     pub created: Timestamp,
-    pub currency: Currency,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_source: Option<String>,
     pub delinquent: bool,
@@ -43,7 +47,8 @@ pub struct CustomerResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<CustomerShippingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sources: Option<List<HashMap<String, String>>>,
+    // pub sources: Option<List<HashMap<String, String>>>,
+    pub sources: Option<List<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscriptions: Option<List<HashMap<String, String>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
