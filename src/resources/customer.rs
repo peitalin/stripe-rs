@@ -118,7 +118,7 @@ impl Customer {
     /// For more details see: https://stripe.com/docs/api/customers/update
     pub fn update(
         client: &Client,
-        customer_id: String,
+        customer_id: &CustomerId,
         params: CustomerUpdateParams,
     ) -> Response<CustomerResponse> {
         client.post_form(&format!("/customers/{}", customer_id), params)
