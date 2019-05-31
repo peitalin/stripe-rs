@@ -15,6 +15,7 @@ pub struct CustomerResponse {
     pub object: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
+    pub balance: i32,
     pub created: Timestamp,
     pub currency: Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
