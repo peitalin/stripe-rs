@@ -3,7 +3,8 @@ use crate::ids::{CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Application, Charge, Currency, Customer, Invoice, PaymentMethod, PaymentSource,
-    Review, Shipping, TransferData,
+    Review, Shipping,
+    TransferData,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -365,7 +366,7 @@ pub struct TransferData {
     /// The account (if any) the payment will be attributed to for tax
     /// reporting, and where funds from the payment will be transferred to upon
     /// payment success.
-    pub destination: Expandable<Account>,
+    pub destination: Account,
 }
 
 /// The set of parameters that can be used when creating a payment_intent object.
