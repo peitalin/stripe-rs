@@ -16,15 +16,15 @@ pub struct PaymentIntent {
     pub id: PaymentIntentId,
 
     /// Amount intended to be collected by this PaymentIntent.
-    pub amount: i64,
+    pub amount: i32,
 
     /// Amount that can be captured from this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_capturable: Option<i64>,
+    pub amount_capturable: Option<i32>,
 
     /// Amount that was collected by this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_received: Option<i64>,
+    pub amount_received: Option<i32>,
 
     /// ID of the Connect application that created the PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -34,7 +34,7 @@ pub struct PaymentIntent {
     ///
     /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/payment-intents/use-cases#connected-accounts) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_amount: Option<i64>,
+    pub application_fee_amount: Option<i32>,
 
     /// Populated when `status` is `canceled`, this is the time at which the PaymentIntent was canceled.
     ///
