@@ -136,7 +136,7 @@ impl Customer {
     /// List customers.
     ///
     /// For more details see https://stripe.com/docs/api#list_customers.
-    pub fn list(client: &Client, params: CustomerListParams<'_>) -> Response<List<CustomerResponse>> {
+    pub fn list(client: &Client, params: CustomerListParams) -> Response<List<CustomerResponse>> {
         client.get_query("/customers", &params)
     }
 
