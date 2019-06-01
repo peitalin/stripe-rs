@@ -107,7 +107,7 @@ pub struct Customer {
     pub currency: Option<Currency>,
     pub default_source: Option<PaymentSourceId>,
     pub delinquent: bool,
-    pub desciption: Option<String>,
+    pub description: Option<String>,
     pub discount: Option<Discount>,
     pub email: Option<String>,
     pub livemode: bool,
