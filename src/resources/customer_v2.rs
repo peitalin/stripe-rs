@@ -4,7 +4,6 @@ use crate::resources::{
     CustomerShippingDetails,
     Currency,
     Discount,
-    PaymentSource,
 };
 use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
