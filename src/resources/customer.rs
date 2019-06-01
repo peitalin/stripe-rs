@@ -29,25 +29,46 @@ pub enum DetachedSource {
 ///
 /// For more details see https://stripe.com/docs/api#create_customer and https://stripe.com/docs/api#update_customer.
 #[derive(Clone, Debug, Default, Serialize)]
-pub struct CustomerParams<'a> {
+pub struct CustomerParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_balance: Option<i64>,
+    pub account_balance: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_vat_id: Option<String>,
+    pub address: Option<AddressParams>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_source: Option<PaymentSourceId>,
+    pub default_source: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_settings: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred_locales: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<CustomerShippingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<PaymentSourceParams<'a>>,
+    pub source: Option<String>,
+    // pub source: Option<PaymentSourceParams<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_exempt: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id_data: Option<Vec<TaxIdData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_info: Option<TaxInfo>,
 }
 
 /// The set of parameters that can be used when listing customers.

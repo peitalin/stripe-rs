@@ -124,6 +124,8 @@ pub struct CustomerUpdateParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<AddressParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_source: Option<String>,
@@ -131,14 +133,20 @@ pub struct CustomerUpdateParams {
     pub description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
-    // pub invoice: Option<String>,
-    // pub invoice_settings: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_settings: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred_locales: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<CustomerShippingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -146,6 +154,8 @@ pub struct CustomerUpdateParams {
     // pub source: Option<PaymentSourceParams<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id_data: Option<Vec<TaxIdData>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_info: Option<TaxInfo>,
 }
