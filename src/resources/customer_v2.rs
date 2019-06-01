@@ -12,12 +12,14 @@ use std::collections::HashMap;
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct CustomerResponse {
     pub id: String,
-    pub account_balance: Option<i64>,
-    pub business_vat_id: Option<String>,
     pub object: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_balance: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
     pub balance: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub business_vat_id: Option<String>,
     pub created: Timestamp,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
@@ -173,7 +175,7 @@ pub struct TaxIdData {
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct InvoiceSettings {
-    pub custom_field: Option<HashMap<String, String>>,
+    pub custom_fields: Option<HashMap<String, String>>,
     pub default_payment_method: Option<String>,
     pub footer: Option<String>,
 }
