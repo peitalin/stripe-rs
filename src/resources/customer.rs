@@ -29,19 +29,19 @@ pub enum DetachedSource {
 ///
 /// For more details see https://stripe.com/docs/api#create_customer and https://stripe.com/docs/api#update_customer.
 #[derive(Clone, Debug, Default, Serialize)]
-pub struct CustomerParams<'a> {
+pub struct CustomerParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_vat_id: Option<&'a str>,
+    pub business_vat_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<&'a str>,
+    pub coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_source: Option<PaymentSourceId>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<&'a str>,
+    pub email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -54,17 +54,17 @@ pub struct CustomerParams<'a> {
 ///
 /// For more details see https://stripe.com/docs/api#list_customers
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CustomerListParams<'a> {
+pub struct CustomerListParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
+    pub ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<&'a str>,
+    pub email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
+    pub starting_after: Option<String>,
 }
 
 /// The resource representing a Stripe customer.
@@ -93,7 +93,7 @@ impl Customer {
     /// Creates a new customer.
     ///
     /// For more details see https://stripe.com/docs/api#create_customer.
-    pub fn create(client: &Client, params: CustomerParams<'_>) -> Response<CustomerResponse> {
+    pub fn create(client: &Client, params: CustomerParams) -> Response<CustomerResponse> {
         client.post_form("/customers", params)
     }
 
@@ -110,7 +110,7 @@ impl Customer {
     pub fn update_v1(
         client: &Client,
         customer_id: &CustomerId,
-        params: CustomerParams<'_>,
+        params: CustomerParams,
     ) -> Response<Customer> {
         client.post_form(&format!("/customers/{}", customer_id), params)
     }
@@ -136,7 +136,7 @@ impl Customer {
     /// List customers.
     ///
     /// For more details see https://stripe.com/docs/api#list_customers.
-    pub fn list(client: &Client, params: CustomerListParams<'_>) -> Response<List<CustomerResponse>> {
+    pub fn list(client: &Client, params: CustomerListParams) -> Response<List<CustomerResponse>> {
         client.get_query("/customers", &params)
     }
 
@@ -146,7 +146,7 @@ impl Customer {
     pub fn attach_source(
         client: &Client,
         customer_id: &CustomerId,
-        source: PaymentSourceParams<'_>,
+        source: PaymentSourceParams,
     ) -> Response<PaymentSource> {
         #[derive(Serialize)]
         struct AttachSource<'a> {
