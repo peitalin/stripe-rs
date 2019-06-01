@@ -7,6 +7,9 @@ use crate::resources::{
     PaymentSourceParams, Source, Subscription,
     CustomerResponse,
     CustomerUpdateParams,
+    TaxIdData,
+    TaxInfo,
+    AddressParams,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -114,7 +117,7 @@ impl Customer {
     /// Creates a new customer.
     ///
     /// For more details see https://stripe.com/docs/api#create_customer.
-    pub fn create(client: &Client, params: CustomerParams<'_>) -> Response<CustomerResponse> {
+    pub fn create(client: &Client, params: CustomerParams) -> Response<CustomerResponse> {
         client.post_form("/customers", params)
     }
 
@@ -131,7 +134,7 @@ impl Customer {
     pub fn update_v1(
         client: &Client,
         customer_id: &CustomerId,
-        params: CustomerParams<'_>,
+        params: CustomerParams,
     ) -> Response<Customer> {
         client.post_form(&format!("/customers/{}", customer_id), params)
     }
