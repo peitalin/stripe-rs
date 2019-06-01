@@ -60,6 +60,8 @@ pub struct CustomerListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ending_before: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<&'a str>,
