@@ -126,6 +126,8 @@ pub struct CustomerUpdateParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub balance: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub business_vat_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_source: Option<PaymentSourceId>,
