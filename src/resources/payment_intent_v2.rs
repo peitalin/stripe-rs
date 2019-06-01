@@ -28,7 +28,7 @@ pub struct PaymentIntent {
 
     /// ID of the Connect application that created the PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application: Option<Expandable<Application>>,
+    pub application: Option<Application>,
 
     /// The amount of the application fee (if any) for the resulting payment.
     ///
@@ -75,7 +75,7 @@ pub struct PaymentIntent {
 
     /// ID of the Customer this PaymentIntent is for if one exists.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Expandable<Customer>>,
+    pub customer: Option<Customer>,
 
     /// An arbitrary string attached to the object.
     ///
@@ -85,7 +85,7 @@ pub struct PaymentIntent {
 
     /// ID of the invoice that created this PaymentIntent, if it exists.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice: Option<Expandable<Invoice>>,
+    pub invoice: Option<Invoice>,
 
     /// The payment error encountered in the previous PaymentIntent confirmation.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -109,11 +109,11 @@ pub struct PaymentIntent {
     ///
     /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/payment-intents/use-cases#connected-accounts) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<Expandable<Account>>,
+    pub on_behalf_of: Option<Account>,
 
     /// ID of the payment method used in this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method: Option<Expandable<PaymentMethod>>,
+    pub payment_method: Option<PaymentMethod>,
 
     /// The list of payment method types (e.g.
     ///
@@ -126,7 +126,7 @@ pub struct PaymentIntent {
 
     /// ID of the review associated with this PaymentIntent, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub review: Option<Expandable<Review>>,
+    pub review: Option<Review>,
 
     /// Shipping information for this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -134,7 +134,7 @@ pub struct PaymentIntent {
 
     /// ID of the source used in this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<Expandable<PaymentSource>>,
+    pub source: Option<PaymentSource>,
 
     /// Extra information about a PaymentIntent.
     ///
@@ -365,7 +365,7 @@ pub struct TransferData {
     /// The account (if any) the payment will be attributed to for tax
     /// reporting, and where funds from the payment will be transferred to upon
     /// payment success.
-    pub destination: Expandable<Account>,
+    pub destination: Account,
 }
 
 /// The set of parameters that can be used when creating a payment_intent object.
