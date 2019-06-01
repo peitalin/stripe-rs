@@ -361,14 +361,6 @@ pub struct PaymentIntentNextActionRedirectToUrl {
     pub url: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TransferData {
-    /// The account (if any) the payment will be attributed to for tax
-    /// reporting, and where funds from the payment will be transferred to upon
-    /// payment success.
-    pub destination: Account,
-}
-
 /// The set of parameters that can be used when creating a payment_intent object.
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/create](https://stripe.com/docs/api/payment_intents/create)
