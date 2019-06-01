@@ -40,9 +40,11 @@ pub struct CustomerParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub balance: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub business_vat_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_source: Option<String>,
+    pub default_source: Option<PaymentSourceId>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -97,7 +99,9 @@ pub struct CustomerListParams {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Customer {
     pub id: CustomerId,
-    pub account_balance: i64,
+    pub account_balance: i32,
+    pub address: Option<AddressParams>,
+    pub balance: i32,
     pub business_vat_id: Option<String>,
     pub created: Timestamp,
     pub currency: Option<Currency>,
