@@ -4,6 +4,7 @@ use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Time
 use crate::resources::{
     Account, Application, Charge, Currency, Customer, Invoice, PaymentMethod, PaymentSource,
     Review, Shipping,
+    TransferData,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -358,14 +359,6 @@ pub struct PaymentIntentNextActionRedirectToUrl {
     /// The URL you must redirect your customer to in order to authenticate the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TransferData {
-    /// The account (if any) the payment will be attributed to for tax
-    /// reporting, and where funds from the payment will be transferred to upon
-    /// payment success.
-    pub destination: Account,
 }
 
 /// The set of parameters that can be used when creating a payment_intent object.
