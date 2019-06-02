@@ -290,7 +290,7 @@ pub struct TransferData {
     pub amount: Option<i64>,
 
     /// ID of an existing, connected Stripe account to transfer funds to if `transfer_data` was specified in the charge request.
-    pub destination: Expandable<Account>,
+    pub destination: Account,
 }
 
 /// The set of parameters that can be used when capturing a charge object.
