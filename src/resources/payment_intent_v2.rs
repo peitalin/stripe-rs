@@ -260,7 +260,7 @@ pub struct PaymentError {
 /// The resource representing a Stripe PaymentErrorType object.
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/object#payment_intent_object-last_payment_error-type](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-last_payment_error-type).
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 pub enum PaymentErrorType {
     #[serde(rename = "api_error")]
     Api,
@@ -287,7 +287,7 @@ pub enum PaymentErrorType {
 //       that all of the variants are _always_ the same.
 //
 //       In that case this can be replaced with a deprecated type alias.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentMethodType {
     Card,
@@ -296,7 +296,7 @@ pub enum PaymentIntentMethodType {
 /// The resource representing a Stripe CaptureMethod object.
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/object#payment_intent_object-capture_method](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-capture_method).
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum CaptureMethod {
     Automatic,
@@ -310,7 +310,7 @@ pub enum CaptureMethod {
 /// The resource representing a Stripe ConfirmationMethod object.
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/object#payment_intent_object-confirmation_method](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-confirmation_method).
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum ConfirmationMethod {
     Secret,
@@ -322,7 +322,7 @@ pub enum ConfirmationMethod {
     Other,
 }
 
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentNextActionType {
     RedirectToUrl,
@@ -334,7 +334,7 @@ pub enum PaymentIntentNextActionType {
     Other,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Display, Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextAction {
     /// Type of the next action to perform, one of `redirect_to_url` or `use_stripe_sdk`.
     #[serde(rename = "type")]
@@ -350,7 +350,7 @@ pub struct PaymentIntentNextAction {
     pub use_stripe_sdk: Option<serde_json::Value>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Display, Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionRedirectToUrl {
     /// If the customer does not exit their browser while authenticating, they will be redirected to this specified URL after completion.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -521,7 +521,7 @@ pub struct PaymentIntentListParams<'a> {
 }
 
 /// An enum representing the possible values of an `PaymentIntent`'s `cancellation_reason` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Display, Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentCancellationReason {
     Abandoned,
@@ -534,7 +534,7 @@ pub enum PaymentIntentCancellationReason {
 }
 
 /// An enum representing the possible values of an `PaymentIntent`'s `capture_method` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Display, Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentCaptureMethod {
     Automatic,
@@ -542,7 +542,7 @@ pub enum PaymentIntentCaptureMethod {
 }
 
 /// An enum representing the possible values of an `PaymentIntent`'s `confirmation_method` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Display, Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentConfirmationMethod {
     Automatic,
@@ -550,7 +550,7 @@ pub enum PaymentIntentConfirmationMethod {
 }
 
 /// An enum representing the possible values of an `PaymentIntent`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Display, Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentStatus {
     Canceled,
