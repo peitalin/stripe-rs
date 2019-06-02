@@ -93,7 +93,7 @@ pub struct CustomerListParams {
 pub struct Customer {
     pub id: CustomerId,
     pub account_balance: i32,
-    pub address: Option<AddressParams>,
+    pub address: Option<Address>,
     pub balance: i32,
     pub business_vat_id: Option<String>,
     pub created: Timestamp,
