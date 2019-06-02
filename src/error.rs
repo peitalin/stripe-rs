@@ -130,7 +130,7 @@ impl std::fmt::Display for ErrorType {
 }
 
 /// The list of possible values for a RequestError's code.
-#[derive(Clone, Copy, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
+#[derive(Display, Clone, Copy, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum ErrorCode {
     AccountAlreadyExists,

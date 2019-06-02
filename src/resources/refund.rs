@@ -7,7 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 /// An enum representing the possible values of a `Refund`'s `reason` field.
 ///
 /// For more details see [https://stripe.com/docs/api/refunds/object#refund_object-reason](https://stripe.com/docs/api/refunds/object#refund_object-reason)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Copy, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Copy, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum RefundReason {
     Duplicate,
@@ -23,13 +23,13 @@ pub enum RefundReason {
 /// An enum representing the possible values of a `Refund`'s `status` field.
 ///
 /// For more details see [https://stripe.com/docs/api/refunds/object#refund_object-status](https://stripe.com/docs/api/refunds/object#refund_object-status)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum RefundStatus {
     Pending,
     Succeeded,
     Failed,
-    Canceled,
+    Cancelled,
 
     /// A variant not yet supported by the library.
     /// It is an error to send `Other` as part of a request.
@@ -40,7 +40,7 @@ pub enum RefundStatus {
 /// An enum representing the possible values of a `Refund`'s `failure_reason` field.
 ///
 /// For more details see [https://stripe.com/docs/api/refunds/object#refund_object-failure_reason](https://stripe.com/docs/api/refunds/object#refund_object-failure_reason)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum RefundFailureReason {
     LostOrStolenCard,

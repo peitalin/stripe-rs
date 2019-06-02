@@ -390,7 +390,7 @@ pub struct DestinationParams<'a> {
 /// The resource representing a Stripe charge object status.
 ///
 /// For more details see [https://stripe.com/docs/api#charge_object-status](https://stripe.com/docs/api#charge_object-status)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 pub enum ChargeStatus {
     #[serde(rename = "succeeded")]
     Succeeded,
