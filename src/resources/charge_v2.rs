@@ -27,13 +27,13 @@ pub struct Charge {
 
     /// ID of the Connect application that created the charge.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application: Option<Expandable<Application>>,
+    pub application: Option<Application>,
 
     /// The application fee (if any) for the charge.
     ///
     /// [See the Connect documentation](https://stripe.com/docs/connect/direct-charges#collecting-fees) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee: Option<Expandable<ApplicationFee>>,
+    pub application_fee: Option<ApplicationFee>,
 
     /// The amount of the application fee (if any) for the charge.
     ///
@@ -43,7 +43,7 @@ pub struct Charge {
 
     /// ID of the balance transaction that describes the impact of this charge on your account balance (not including refunds or disputes).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance_transaction: Option<Expandable<BalanceTransaction>>,
+    pub balance_transaction: Option<BalanceTransaction>,
 
     pub billing_details: BillingDetails,
 
@@ -62,7 +62,7 @@ pub struct Charge {
 
     /// ID of the customer this charge is for if one exists.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Expandable<Customer>>,
+    pub customer: Option<Customer>,
 
     /// An arbitrary string attached to the object.
     ///
@@ -72,7 +72,7 @@ pub struct Charge {
 
     /// Details about the dispute if the charge has been disputed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dispute: Option<Expandable<Dispute>>,
+    pub dispute: Option<Dispute>,
 
     /// Error code explaining reason for charge failure if available (see [the errors section](https://stripe.com/docs/api#errors) for a list of codes).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -88,7 +88,7 @@ pub struct Charge {
 
     /// ID of the invoice this charge is for if one exists.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice: Option<Expandable<Invoice>>,
+    pub invoice: Option<Invoice>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -102,11 +102,11 @@ pub struct Charge {
     ///
     /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<Expandable<Account>>,
+    pub on_behalf_of: Option<Account>,
 
     /// ID of the order this charge is for if one exists.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub order: Option<Expandable<Order>>,
+    pub order: Option<Order>,
 
     /// Details about whether the payment was accepted, and why.
     ///
@@ -155,7 +155,7 @@ pub struct Charge {
 
     /// ID of the review associated with this charge if one exists.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub review: Option<Expandable<Review>>,
+    pub review: Option<Review>,
 
     /// Shipping information for the charge.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -172,7 +172,7 @@ pub struct Charge {
     /// Only present if the charge came from another Stripe account.
     /// [See the Connect documentation](https://stripe.com/docs/connect/destination-charges) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_transfer: Option<Expandable<Transfer>>,
+    pub source_transfer: Option<Transfer>,
 
     /// Extra information about a charge.
     ///
@@ -186,7 +186,7 @@ pub struct Charge {
 
     /// ID of the transfer to the `destination` account (only applicable if the charge was created using the `destination` parameter).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer: Option<Expandable<Transfer>>,
+    pub transfer: Option<Transfer>,
 
     /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
     ///
@@ -390,7 +390,7 @@ pub struct DestinationParams {
 /// The resource representing a Stripe charge object status.
 ///
 /// For more details see [https://stripe.com/docs/api#charge_object-status](https://stripe.com/docs/api#charge_object-status)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 pub enum ChargeStatus {
     #[serde(rename = "succeeded")]
     Succeeded,
