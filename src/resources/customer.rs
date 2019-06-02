@@ -2,23 +2,16 @@ use crate::config::{Client, Response};
 use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId};
 use crate::params::{Deleted, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount,
-    Currency, Discount, PaymentSource,
-    PaymentSourceParams, Source, Subscription,
-    CustomerResponse,
-    CustomerUpdateParams,
-    TaxIdData,
-    TaxInfo,
-    AddressParams,
+    Address, AddressParams,
+    BankAccount,
+    CustomerResponse, CustomerUpdateParams, Currency,
+    Discount,
+    PaymentSource, PaymentSourceParams,
+    Source, Subscription, Shipping,
+    TaxIdData, TaxInfo,
 };
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CustomerShippingDetails {
-    pub address: Address,
-    pub name: String,
-    pub phone: String,
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
@@ -64,7 +57,7 @@ pub struct CustomerParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locales: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<CustomerShippingDetails>,
+    pub shipping: Option<Shipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
     // pub source: Option<PaymentSourceParams<'a>>,
@@ -112,7 +105,7 @@ pub struct Customer {
     pub email: Option<String>,
     pub livemode: bool,
     pub metadata: Metadata,
-    pub shipping: Option<CustomerShippingDetails>,
+    pub shipping: Option<Shipping>,
     pub sources: List<PaymentSource>,
     pub subscriptions: List<Subscription>,
 }

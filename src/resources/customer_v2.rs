@@ -2,7 +2,7 @@ use crate::params::{List, Metadata, Timestamp};
 use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId};
 use crate::resources::{
     Address,
-    CustomerShippingDetails,
+    Shipping,
     Currency,
     Discount,
 };
@@ -47,7 +47,7 @@ pub struct CustomerResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locales: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<CustomerShippingDetails>,
+    pub shipping: Option<Shipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
     // pub sources: Option<List<HashMap<String, String>>>,
     pub sources: Option<List<String>>,
@@ -151,7 +151,7 @@ pub struct CustomerUpdateParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locales: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<CustomerShippingDetails>,
+    pub shipping: Option<Shipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
     // pub source: Option<PaymentSourceParams<'a>>,
