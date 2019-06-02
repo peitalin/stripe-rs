@@ -61,6 +61,10 @@ mod ids;
 mod params;
 mod resources;
 
+extern crate strum;
+#[macro_use]
+extern crate strum_macros;
+
 // N.B. Ideally we would support both a blocking client and
 //      an async client without a feature flag, but the originally
 //      discussed solution requires Generic Associated Types--
