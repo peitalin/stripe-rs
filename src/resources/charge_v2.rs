@@ -403,7 +403,7 @@ pub enum ChargeStatus {
 /// An enum representing the possible values of a `ChargeOutcome`'s `network_status` field.
 ///
 /// For more details see [https://stripe.com/docs/api#charge_object-outcome-network_status](https://stripe.com/docs/api#charge_object-outcome-network_status)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum NetworkStatus {
     ApprovedByNetwork,
@@ -423,7 +423,7 @@ pub enum NetworkStatus {
 /// An enum representing the possible values of a `ChargeOutcome`'s `reason` field.
 ///
 /// For more details see [https://stripe.com/docs/api#charge_object-outcome-reason](https://stripe.com/docs/api#charge_object-outcome-reason)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum OutcomeReason {
     ApprovedWithId,
@@ -479,7 +479,7 @@ pub enum OutcomeReason {
 /// An enum representing the possible values of a `ChargeOutcome`'s `type` field.
 ///
 /// For more details see [https://stripe.com/docs/api#charge_object-outcome-type](https://stripe.com/docs/api#charge_object-outcome-type)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Copy, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Copy, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum OutcomeType {
     Authorized,
@@ -497,7 +497,7 @@ pub enum OutcomeType {
 /// An enum representing the possible values of a `ChargeOutcome`'s `risk_level` field.
 ///
 /// For more details see [https://stripe.com/docs/api#charge_object-outcome-risk_level](https://stripe.com/docs/api#charge_object-outcome-risk_level)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Display, Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum RiskLevel {
     Normal,
