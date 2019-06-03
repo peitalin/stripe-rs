@@ -3,6 +3,7 @@ use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId};
 use crate::resources::{
     Address,
     Shipping,
+    Subscription,
     Currency,
     Discount,
 };
@@ -52,7 +53,7 @@ pub struct CustomerResponse {
     // pub sources: Option<List<HashMap<String, String>>>,
     pub sources: Option<List<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscriptions: Option<List<HashMap<String, String>>>,
+    pub subscriptions: Option<List<Subscription>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
