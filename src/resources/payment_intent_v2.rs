@@ -479,7 +479,7 @@ pub struct PaymentIntentCaptureParams {
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct PaymentIntentCancelParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<PaymentIntentCancellationReason>,
+        pub cancellation_reason: Option<PaymentIntentCancellationReason>,
 }
 
 /// The parameters for `PaymentIntent::list`.

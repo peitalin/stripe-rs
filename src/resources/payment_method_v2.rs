@@ -147,7 +147,7 @@ impl PaymentMethod {
     pub fn list_payment_methods(
         client: &Client,
         params: PaymentMethodsListParams,
-    ) -> Response<PaymentMethodsListResponse> {
+    ) -> Response<List<PaymentMethodResponse>> {
         client.get_query("/payment_methods", &params)
     }
 
@@ -273,12 +273,4 @@ pub struct PaymentMethodCardResponse {
     pub last4: String,
     pub three_d_secure_usage: Option<ThreeDSecureUsage>,
     pub wallet: Option<Wallet>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PaymentMethodsListResponse {
-    pub object: String,
-    pub url: String,
-    pub has_more: bool,
-    pub data: Vec<PaymentMethodResponse>,
 }
