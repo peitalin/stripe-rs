@@ -82,7 +82,7 @@ pub use crate::ids::*;
 pub use crate::params::{
     Headers, List, Metadata,
     RangeBounds, RangeQuery, Timestamp,
-    Expandable, Expand,
+    Expandable, Expand, Object, Paginate,
     Deleted,
 };
 pub use crate::resources::*;
