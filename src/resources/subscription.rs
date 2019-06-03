@@ -353,7 +353,7 @@ pub enum SubscriptionBilling {
 }
 
 /// An enum representing the possible values of an `Subscription`'s `status` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[derive(Display, Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SubscriptionStatus {
     Active,
