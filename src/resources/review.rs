@@ -138,31 +138,31 @@ pub struct RadarReviewResourceSession {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListReviews<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a ReviewId>,
+    pub ending_before: Option<ReviewId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a ReviewId>,
+    pub starting_after: Option<ReviewId>,
 }
 
 impl<'a> ListReviews<'a> {
@@ -187,12 +187,56 @@ pub enum ReviewClosedReason {
     RefundedAsFraud,
 }
 
+impl ReviewClosedReason {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            ReviewClosedReason::Approved => "approved",
+            ReviewClosedReason::Disputed => "disputed",
+            ReviewClosedReason::Refunded => "refunded",
+            ReviewClosedReason::RefundedAsFraud => "refunded_as_fraud",
+        }
+    }
+}
+
+impl AsRef<str> for ReviewClosedReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ReviewClosedReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `Review`'s `opened_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum ReviewOpenedReason {
     Manual,
     Rule,
+}
+
+impl ReviewOpenedReason {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            ReviewOpenedReason::Manual => "manual",
+            ReviewOpenedReason::Rule => "rule",
+        }
+    }
+}
+
+impl AsRef<str> for ReviewOpenedReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ReviewOpenedReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Review`'s `reason` field.
@@ -205,4 +249,29 @@ pub enum ReviewReason {
     Refunded,
     RefundedAsFraud,
     Rule,
+}
+
+impl ReviewReason {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            ReviewReason::Approved => "approved",
+            ReviewReason::Disputed => "disputed",
+            ReviewReason::Manual => "manual",
+            ReviewReason::Refunded => "refunded",
+            ReviewReason::RefundedAsFraud => "refunded_as_fraud",
+            ReviewReason::Rule => "rule",
+        }
+    }
+}
+
+impl AsRef<str> for ReviewReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ReviewReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

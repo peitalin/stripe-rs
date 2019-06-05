@@ -686,70 +686,82 @@ pub struct CreateSource<'a> {
     /// This is the amount for which the source will be chargeable once ready.
     /// Required for `single_use` sources.
     #[serde(skip_serializing_if = "Option::is_none")]
-    amount: Option<i64>,
+    pub amount: Option<i64>,
 
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) associated with the source.
     ///
     /// This is the currency for which the source will be chargeable once ready.
     #[serde(skip_serializing_if = "Option::is_none")]
-    currency: Option<Currency>,
+    pub currency: Option<Currency>,
 
     /// The `Customer` to whom the original source is attached to.
     ///
     /// Must be set when the original source is not a `Source` (e.g., `Card`).
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<CustomerId>,
+    pub customer: Option<CustomerId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// The authentication `flow` of the source to create.
     ///
     /// `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.
     /// It is generally inferred unless a type supports multiple flows.
     #[serde(skip_serializing_if = "Option::is_none")]
-    flow: Option<SourceFlow>,
+    pub flow: Option<SourceFlow>,
+
+    /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    mandate: Option<SourceMandateParams>,
+    pub mandate: Option<SourceMandateParams>,
 
     /// A set of key-value pairs that you can attach to a source object.
     ///
     /// It can be useful for storing additional information about the source in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// The source to share.
     #[serde(skip_serializing_if = "Option::is_none")]
-    original_source: Option<&'a str>,
+    pub original_source: Option<&'a str>,
+
+    /// Information about the owner of the payment instrument that may be used or required by particular source types.
     #[serde(skip_serializing_if = "Option::is_none")]
-    owner: Option<BillingDetails>,
+    pub owner: Option<BillingDetails>,
+
+    /// Optional parameters for the receiver flow.
+    ///
+    /// Can be set only if the source is a receiver (`flow` is `receiver`).
     #[serde(skip_serializing_if = "Option::is_none")]
-    receiver: Option<CreateSourceReceiver>,
+    pub receiver: Option<CreateSourceReceiver>,
+
+    /// Parameters required for the redirect flow.
+    ///
+    /// Required if the source is authenticated by a redirect (`flow` is `redirect`).
     #[serde(skip_serializing_if = "Option::is_none")]
-    redirect: Option<CreateSourceRedirect>,
+    pub redirect: Option<CreateSourceRedirect>,
 
     /// An arbitrary string to be displayed on your customer's statement.
     ///
     /// As an example, if your website is `RunClub` and the item you're charging for is a race ticket, you may want to specify a `statement_descriptor` of `RunClub 5K race ticket.` While many payment types will display this information, some may not display it at all.
     #[serde(skip_serializing_if = "Option::is_none")]
-    statement_descriptor: Option<&'a str>,
+    pub statement_descriptor: Option<&'a str>,
 
     /// An optional token used to create the source.
     ///
     /// When passed, token properties will override source parameters.
     #[serde(skip_serializing_if = "Option::is_none")]
-    token: Option<TokenId>,
+    pub token: Option<TokenId>,
 
     /// The `type` of the source to create.
     ///
     /// Required unless `customer` and `original_source` are specified (see the [Shared card Sources](https://stripe.com/docs/sources/connect#shared-card-sources) guide).
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    type_: Option<&'a str>,
+    pub type_: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    usage: Option<SourceUsage>,
+    pub usage: Option<SourceUsage>,
 }
 
 impl<'a> CreateSource<'a> {
@@ -779,17 +791,21 @@ impl<'a> CreateSource<'a> {
 pub struct UpdateSource<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
+
+    /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    mandate: Option<SourceMandateParams>,
+    pub mandate: Option<SourceMandateParams>,
 
     /// A set of key-value pairs that you can attach to a source object.
     ///
     /// It can be useful for storing additional information about the source in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
+
+    /// Information about the owner of the payment instrument that may be used or required by particular source types.
     #[serde(skip_serializing_if = "Option::is_none")]
-    owner: Option<BillingDetails>,
+    pub owner: Option<BillingDetails>,
 }
 
 impl<'a> UpdateSource<'a> {
@@ -880,12 +896,56 @@ pub enum SourceAcceptanceParamsStatus {
     Revoked,
 }
 
+impl SourceAcceptanceParamsStatus {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            SourceAcceptanceParamsStatus::Accepted => "accepted",
+            SourceAcceptanceParamsStatus::Pending => "pending",
+            SourceAcceptanceParamsStatus::Refused => "refused",
+            SourceAcceptanceParamsStatus::Revoked => "revoked",
+        }
+    }
+}
+
+impl AsRef<str> for SourceAcceptanceParamsStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceAcceptanceParamsStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `SourceAcceptanceParams`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceAcceptanceParamsType {
     Offline,
     Online,
+}
+
+impl SourceAcceptanceParamsType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            SourceAcceptanceParamsType::Offline => "offline",
+            SourceAcceptanceParamsType::Online => "online",
+        }
+    }
+}
+
+impl AsRef<str> for SourceAcceptanceParamsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceAcceptanceParamsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Source`'s `flow` field.
@@ -898,6 +958,29 @@ pub enum SourceFlow {
     Redirect,
 }
 
+impl SourceFlow {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            SourceFlow::CodeVerification => "code_verification",
+            SourceFlow::None => "none",
+            SourceFlow::Receiver => "receiver",
+            SourceFlow::Redirect => "redirect",
+        }
+    }
+}
+
+impl AsRef<str> for SourceFlow {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceFlow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `SourceMandateParams`'s `interval` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -905,6 +988,28 @@ pub enum SourceMandateInterval {
     OneTime,
     Scheduled,
     Variable,
+}
+
+impl SourceMandateInterval {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            SourceMandateInterval::OneTime => "one_time",
+            SourceMandateInterval::Scheduled => "scheduled",
+            SourceMandateInterval::Variable => "variable",
+        }
+    }
+}
+
+impl AsRef<str> for SourceMandateInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceMandateInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `SourceMandateParams`'s `notification_method` field.
@@ -918,6 +1023,30 @@ pub enum SourceMandateNotificationMethod {
     StripeEmail,
 }
 
+impl SourceMandateNotificationMethod {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            SourceMandateNotificationMethod::DeprecatedNone => "deprecated_none",
+            SourceMandateNotificationMethod::Email => "email",
+            SourceMandateNotificationMethod::Manual => "manual",
+            SourceMandateNotificationMethod::None => "none",
+            SourceMandateNotificationMethod::StripeEmail => "stripe_email",
+        }
+    }
+}
+
+impl AsRef<str> for SourceMandateNotificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceMandateNotificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `SourceRedirectFlow`'s `failure_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -925,6 +1054,28 @@ pub enum SourceRedirectFlowFailureReason {
     Declined,
     ProcessingError,
     UserAbort,
+}
+
+impl SourceRedirectFlowFailureReason {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            SourceRedirectFlowFailureReason::Declined => "declined",
+            SourceRedirectFlowFailureReason::ProcessingError => "processing_error",
+            SourceRedirectFlowFailureReason::UserAbort => "user_abort",
+        }
+    }
+}
+
+impl AsRef<str> for SourceRedirectFlowFailureReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceRedirectFlowFailureReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `SourceRedirectFlow`'s `status` field.
@@ -937,6 +1088,29 @@ pub enum SourceRedirectFlowStatus {
     Succeeded,
 }
 
+impl SourceRedirectFlowStatus {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            SourceRedirectFlowStatus::Failed => "failed",
+            SourceRedirectFlowStatus::NotRequired => "not_required",
+            SourceRedirectFlowStatus::Pending => "pending",
+            SourceRedirectFlowStatus::Succeeded => "succeeded",
+        }
+    }
+}
+
+impl AsRef<str> for SourceRedirectFlowStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceRedirectFlowStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `CreateSourceReceiver`'s `refund_attributes_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -944,6 +1118,28 @@ pub enum SourceRefundNotificationMethod {
     Email,
     Manual,
     None,
+}
+
+impl SourceRefundNotificationMethod {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            SourceRefundNotificationMethod::Email => "email",
+            SourceRefundNotificationMethod::Manual => "manual",
+            SourceRefundNotificationMethod::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for SourceRefundNotificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceRefundNotificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Source`'s `status` field.
@@ -955,6 +1151,30 @@ pub enum SourceStatus {
     Consumed,
     Failed,
     Pending,
+}
+
+impl SourceStatus {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            SourceStatus::Canceled => "canceled",
+            SourceStatus::Chargeable => "chargeable",
+            SourceStatus::Consumed => "consumed",
+            SourceStatus::Failed => "failed",
+            SourceStatus::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for SourceStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Source`'s `type` field.
@@ -978,10 +1198,65 @@ pub enum SourceType {
     Wechat,
 }
 
+impl SourceType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            SourceType::AchCreditTransfer => "ach_credit_transfer",
+            SourceType::AchDebit => "ach_debit",
+            SourceType::Alipay => "alipay",
+            SourceType::Bancontact => "bancontact",
+            SourceType::Card => "card",
+            SourceType::CardPresent => "card_present",
+            SourceType::Eps => "eps",
+            SourceType::Giropay => "giropay",
+            SourceType::Ideal => "ideal",
+            SourceType::Multibanco => "multibanco",
+            SourceType::P24 => "p24",
+            SourceType::SepaDebit => "sepa_debit",
+            SourceType::Sofort => "sofort",
+            SourceType::ThreeDSecure => "three_d_secure",
+            SourceType::Wechat => "wechat",
+        }
+    }
+}
+
+impl AsRef<str> for SourceType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `Source`'s `usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceUsage {
     Reusable,
     SingleUse,
+}
+
+impl SourceUsage {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            SourceUsage::Reusable => "reusable",
+            SourceUsage::SingleUse => "single_use",
+        }
+    }
+}
+
+impl AsRef<str> for SourceUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

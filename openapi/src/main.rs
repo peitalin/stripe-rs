@@ -94,6 +94,8 @@ fn main() {
         ("invoiceitem", "invoice_item"),
         ("legal_entity_company", "company"),
         ("legal_entity_japan_address", "address"),
+        ("legal_entity_person_verification", "person_verification"),
+        ("legal_entity_person_verification_document", "person_verification_document"),
         ("line_item", "invoice_line_item"),
         ("payment_method_card", "card_details"),
         ("payment_method_card_present", "card_present"),
@@ -170,6 +172,7 @@ fn main() {
         ),
         (("payment_intent", "source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
         (("payment_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
+        (("person", "dob"), ("Dob", "Option<Dob>")),
         (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
         (
             ("subscription", "default_source"),
@@ -226,6 +229,7 @@ fn main() {
     ]);
     field_overrides.extend(vec![
         (("create_charge", "shipping"), ("Shipping", "Option<Shipping>")),
+        (("create_charge", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams<'a>>")),
         (("update_charge", "shipping"), ("Shipping", "Option<Shipping>")),
         (("fraud_details_params", "user_report"), ("FraudDetailsReport", "FraudDetailsReport")),
     ]);
@@ -242,15 +246,24 @@ fn main() {
     field_overrides.extend(vec![
         (("create_customer", "address"), ("Address", "Option<Address>")),
         (("update_customer", "address"), ("Address", "Option<Address>")),
+        (
+            ("update_customer", "default_alipay_account"),
+            ("AlipayAccountId", "Option<AlipayAccountId>"),
+        ),
+        (("update_customer", "default_bank_account"), ("BankAccountId", "Option<BankAccountId>")),
+        (("update_customer", "default_card"), ("CardId", "Option<CardId>")),
+        (("create_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
+        (("update_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
         (("create_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("update_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
+        (("create_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams<'a>>")),
+        (("update_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams<'a>>")),
         (("update_customer", "trial_end"), ("Scheduled", "Option<Scheduled>")),
         (
             ("customer_invoice_settings", "custom_fields"),
             ("CustomField", "Option<Vec<CustomField>>"),
         ),
     ]);
-
     // Renames for `invoice` params
     field_overrides.extend(vec![(
         ("create_invoice", "custom_fields"),
@@ -313,11 +326,23 @@ fn main() {
     // Renames for `subscription` params
     field_overrides.extend(vec![
         (
+            ("create_subscription", "billing_thresholds"),
+            ("SubscriptionBillingThresholds", "Option<SubscriptionBillingThresholds>"),
+        ),
+        (
             ("update_subscription", "billing_thresholds"),
             ("SubscriptionBillingThresholds", "Option<SubscriptionBillingThresholds>"),
         ),
         (
+            ("create_subscription_items", "billing_thresholds"),
+            ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
+        ),
+        (
             ("update_subscription_item", "billing_thresholds"),
+            ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
+        ),
+        (
+            ("update_subscription_items", "billing_thresholds"),
             ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
         ),
         (("create_subscription", "trial_end"), ("Scheduled", "Option<Scheduled>")),
@@ -337,6 +362,14 @@ fn main() {
     ]);
 
     // Renames for misc
+    schema_renames.insert("webhook_endpoint_enabled_events", "event_filter");
+    schema_renames.insert("webhook_endpoint_api_version", "api_version");
+    schema_renames.insert("create_webhook_endpoint_enabled_events", "event_filter");
+    schema_renames.insert("update_webhook_endpoint_enabled_events", "event_filter");
+    field_overrides.insert(
+        ("update_payment_method", "billing_details"),
+        ("BillingDetails", "Option<BillingDetails>"),
+    );
     field_overrides.insert(
         ("create_product", "package_dimensions"),
         ("PackageDimensions", "Option<PackageDimensions>"),
@@ -347,6 +380,14 @@ fn main() {
     );
     field_overrides.insert(("create_plan_tiers", "up_to"), ("UpTo", "Option<UpTo>"));
     field_overrides.insert(("update_file_link", "expires_at"), ("Scheduled", "Option<Scheduled>"));
+    field_overrides.insert(
+        ("create_token_account", "business_type"),
+        ("BusinessType", "Option<BusinessType>"),
+    );
+    field_overrides
+        .insert(("create_token_account", "company"), ("CompanyParams", "Option<CompanyParams>"));
+    field_overrides
+        .insert(("create_token_account", "individual"), ("PersonParams", "Option<PersonParams>"));
 
     // Generate files
     let meta = Metadata {
@@ -565,7 +606,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             out.push('\n');
             out.push_str("    // Always true for a deleted object\n");
             out.push_str("    #[serde(default)]\n");
-            out.push_str("    deleted: bool,\n");
+            out.push_str("    pub deleted: bool,\n");
             did_emit_deleted = true;
         }
         let required = schema["required"]
@@ -650,6 +691,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
 
     for (_, params) in state.inferred_parameters.clone() {
+        let params_schema = params.rust_type.to_snake_case();
         let parameters = match params.parameters.as_array() {
             Some(some) => some.as_slice(),
             None => &[],
@@ -685,15 +727,16 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             match param_name {
                 // TODO: Handle these unusual params
                 "bank_account" | "card" | "destination" | "product" => continue,
+
                 "metadata" => {
                     print_doc(&mut out);
                     initializers.push(("metadata".into(), "Metadata".into(), required));
                     state.use_params.insert("Metadata");
                     if required {
-                        out.push_str("    metadata: Metadata,\n");
+                        out.push_str("    pub metadata: Metadata,\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    metadata: Option<Metadata>,\n");
+                        out.push_str("    pub metadata: Option<Metadata>,\n");
                     }
                 }
                 "expand" => {
@@ -701,16 +744,16 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     initializers.push(("expand".into(), "&'a [&'a str]".into(), false));
                     state.use_params.insert("Expand");
                     out.push_str("    #[serde(skip_serializing_if = \"Expand::is_empty\")]\n");
-                    out.push_str("    expand: &'a [&'a str],\n");
+                    out.push_str("    pub expand: &'a [&'a str],\n");
                 }
                 "limit" => {
                     print_doc(&mut out);
                     initializers.push(("limit".into(), "u64".into(), false));
                     if required {
-                        out.push_str("    limit: u64,\n");
+                        out.push_str("    pub limit: u64,\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    limit: Option<u64>,\n");
+                        out.push_str("    pub limit: Option<u64>,\n");
                     }
                 }
                 "ending_before" => {
@@ -719,12 +762,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     initializers.push(("ending_before".into(), cursor_type.into(), false));
                     if required {
                         panic!("unexpected \"required\" `ending_before` parameter");
-                    // out.push_str("    ending_before: &'a ");
-                    // out.push_str(cursor_type);
-                    // out.push_str(",\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    ending_before: Option<&'a ");
+                        out.push_str("    pub ending_before: Option<");
                         out.push_str(cursor_type);
                         out.push_str(">,\n");
                     }
@@ -735,53 +775,77 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     initializers.push(("starting_after".into(), cursor_type.into(), false));
                     if required {
                         panic!("unexpected \"required\" `starting_after` parameter");
-                    // out.push_str("    starting_after: &'a ");
-                    // out.push_str(cursor_type);
-                    // out.push_str(",\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    starting_after: Option<&'a ");
+                        out.push_str("    pub starting_after: Option<");
                         out.push_str(cursor_type);
                         out.push_str(">,\n");
                     }
                 }
-                object
-                    if meta.ids.contains_key(object)
-                        && param["schema"]["type"].as_str() == Some("string")
-                        && param_name != "tax_id" =>
-                {
-                    let id_type = &meta.ids[object];
-                    print_doc(&mut out);
-                    initializers.push((object.into(), id_type.clone(), required));
-                    state.use_ids.insert(id_type.clone());
-                    if required {
-                        out.push_str("    ");
-                        out.push_str(object);
-                        out.push_str(": ");
-                        out.push_str(&id_type);
-                        out.push_str(",\n");
-                    } else {
-                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    ");
-                        out.push_str(object);
-                        out.push_str(": Option<");
-                        out.push_str(&id_type);
-                        out.push_str(">,\n");
-                    }
-                }
                 _ => {
-                    if param["schema"]["type"].as_str() == Some("boolean") {
+                    if let Some((use_path, rust_type)) =
+                        meta.field_overrides.get(&(params_schema.as_str(), param_name))
+                    {
+                        print_doc(&mut out);
+                        initializers.push((param_rename.into(), rust_type.to_string(), required));
+                        match *use_path {
+                            "" | "String" => (),
+                            "Metadata" => {
+                                state.use_params.insert("Metadata");
+                            }
+                            path if path.ends_with("Id") && path != "TaxId" => {
+                                state.use_ids.insert(path.into());
+                            }
+                            path => {
+                                state.use_resources.insert(path.into());
+                            }
+                        }
+                        if rust_type.starts_with("Option<") {
+                            out.push_str(
+                                "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
+                            );
+                        }
+                        out.push_str("    pub ");
+                        out.push_str(&param_rename);
+                        out.push_str(": ");
+                        out.push_str(&rust_type);
+                        out.push_str(",\n");
+                    } else if meta.ids.contains_key(param_name)
+                        && param["schema"]["type"].as_str() == Some("string")
+                        && param_name != "tax_id"
+                    {
+                        let id_type = &meta.ids[param_name];
+                        print_doc(&mut out);
+                        initializers.push((param_name.into(), id_type.clone(), required));
+                        state.use_ids.insert(id_type.clone());
+                        if required {
+                            out.push_str("    pub ");
+                            out.push_str(param_name);
+                            out.push_str(": ");
+                            out.push_str(&id_type);
+                            out.push_str(",\n");
+                        } else {
+                            out.push_str(
+                                "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
+                            );
+                            out.push_str("    pub ");
+                            out.push_str(param_name);
+                            out.push_str(": Option<");
+                            out.push_str(&id_type);
+                            out.push_str(">,\n");
+                        }
+                    } else if param["schema"]["type"].as_str() == Some("boolean") {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), "bool".into(), false));
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": bool,\n");
                         } else {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<bool>,\n");
                         }
@@ -807,7 +871,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), rust_type.into(), required));
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": ");
                             out.push_str(&rust_type);
@@ -816,7 +880,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<");
                             out.push_str(&rust_type);
@@ -826,14 +890,14 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), "f64".into(), required));
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": f64,\n");
                         } else {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<f64>,\n");
                         }
@@ -849,14 +913,14 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         state.use_params.insert("RangeQuery");
                         state.use_params.insert("Timestamp");
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": RangeQuery<Timestamp>,\n");
                         } else {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<RangeQuery<Timestamp>>,\n");
                         }
@@ -888,7 +952,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), enum_name.clone(), required));
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": ");
                             out.push_str(&enum_name);
@@ -897,7 +961,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<");
                             out.push_str(&enum_name);
@@ -910,14 +974,14 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         initializers.push((param_rename.into(), "Currency".into(), required));
                         state.use_resources.insert("Currency".into());
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Currency,\n");
                         } else {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<Currency>,\n");
                         }
@@ -925,14 +989,14 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), "&'a str".into(), required));
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": &'a str,\n");
                         } else {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<&'a str>,\n");
                         }
@@ -952,12 +1016,13 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         );
                         initializers.push((param_rename.into(), rust_type.clone(), required));
 
+                        print_doc(&mut out);
                         if !required {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
                         }
-                        out.push_str("    ");
+                        out.push_str("    pub ");
                         out.push_str(param_rename);
                         out.push_str(": ");
                         out.push_str(&rust_type);
@@ -1023,7 +1088,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 continue;
             } else {
                 emitted_structs.insert(struct_name.clone());
-                eprintln!("struct {} {{ ... }}", struct_name);
+                println!("struct {} {{ ... }}", struct_name);
             }
 
             let fields = match struct_.schema["properties"].as_object() {
@@ -1060,7 +1125,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
 
     for (union_name, union_) in state.inferred_unions.clone() {
-        eprintln!("union {} {{ ... }}", union_name);
+        println!("union {} {{ ... }}", union_name);
 
         out.push('\n');
         out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
@@ -1090,7 +1155,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
 
     for (enum_name, enum_) in state.inferred_enums.clone() {
-        eprintln!("enum {} {{ ... }}", enum_name);
+        println!("enum {} {{ ... }}", enum_name);
 
         out.push('\n');
         out.push_str(&format!(
@@ -1100,13 +1165,25 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         out.push_str("#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]\n");
         out.push_str("#[serde(rename_all = \"snake_case\")]\n");
         out.push_str("pub enum ");
-        out.push_str(&enum_name.to_camel_case());
+        out.push_str(&enum_name);
         out.push_str(" {\n");
         for wire_name in &enum_.options {
-            if wire_name.is_empty() {
+            if wire_name.trim().is_empty() {
                 continue;
             }
-            let variant_name = wire_name.to_camel_case();
+            let variant_name = match wire_name.as_str() {
+                "*" => "All".to_string(),
+                n => {
+                    if n.chars().next().unwrap().is_digit(10) {
+                        format!("V{}", n.to_string().replace('-', "_"))
+                    } else {
+                        meta.schema_to_rust_type(wire_name)
+                    }
+                }
+            };
+            if variant_name.trim().is_empty() {
+                panic!("unhandled enum variant: {:?}", wire_name)
+            }
             if &variant_name.to_snake_case() != wire_name {
                 out.push_str("    #[serde(rename = \"");
                 out.push_str(wire_name);
@@ -1116,6 +1193,53 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             out.push_str(&variant_name);
             out.push_str(",\n");
         }
+        out.push_str("}\n");
+        out.push('\n');
+        out.push_str("impl ");
+        out.push_str(&enum_name);
+        out.push_str(" {\n");
+        out.push_str("    pub fn as_str(&self) -> &'static str {\n");
+        out.push_str("        match self {\n");
+        for wire_name in &enum_.options {
+            if wire_name.trim().is_empty() {
+                continue;
+            }
+            let variant_name = match wire_name.as_str() {
+                "*" => "All".to_string(),
+                n => {
+                    if n.chars().next().unwrap().is_digit(10) {
+                        format!("V{}", n.to_string().replace('-', "_"))
+                    } else {
+                        meta.schema_to_rust_type(wire_name)
+                    }
+                }
+            };
+            out.push_str("            ");
+            out.push_str(&enum_name);
+            out.push_str("::");
+            out.push_str(&variant_name);
+            out.push_str(" => ");
+            out.push_str(&format!("{:?}", wire_name));
+            out.push_str(",\n");
+        }
+        out.push_str("        }\n");
+        out.push_str("    }\n");
+        out.push_str("}\n");
+        out.push('\n');
+        out.push_str("impl AsRef<str> for ");
+        out.push_str(&enum_name);
+        out.push_str(" {\n");
+        out.push_str("    fn as_ref(&self) -> &str {\n");
+        out.push_str("        self.as_str()\n");
+        out.push_str("    }\n");
+        out.push_str("}\n");
+        out.push('\n');
+        out.push_str("impl std::fmt::Display for ");
+        out.push_str(&enum_name);
+        out.push_str(" {\n");
+        out.push_str("    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {\n");
+        out.push_str("        self.as_str().fmt(f)\n");
+        out.push_str("    }\n");
         out.push_str("}\n");
     }
 
