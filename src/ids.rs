@@ -433,7 +433,6 @@ impl std::error::Error for ParseIdError {
     }
 }
 
-def_id!(CustomerId, "cus_");
 def_id!(AccountId, "acct_");
 def_id!(AlipayAccountId, "aliacc_");
 def_id!(ApplicationFeeId, "fee_");

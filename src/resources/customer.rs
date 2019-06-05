@@ -8,18 +8,6 @@ use crate::ids::{
 };
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-<<<<<<< HEAD
-    Address, AddressParams,
-    BankAccount,
-    CustomerResponse, CustomerUpdateParams, Currency,
-    Discount,
-    PaymentSource, PaymentSourceParams,
-    Source, Subscription, Shipping,
-    TaxIdData, TaxInfo,
-};
-use serde_derive::{Deserialize, Serialize};
-
-=======
     Address, Currency, CustomField, Discount, PaymentMethod, PaymentSource, PaymentSourceParams,
     Scheduled, Shipping, ShippingParams, Subscription, TaxId,
 };
@@ -32,7 +20,6 @@ use serde_derive::{Deserialize, Serialize};
 pub struct Customer {
     /// Unique identifier for the object.
     pub id: CustomerId,
->>>>>>> upstream/master
 
     /// Current balance, if any, being stored on the customer's account.
     ///
@@ -44,23 +31,6 @@ pub struct Customer {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<u64>,
 
-<<<<<<< HEAD
-/// The set of parameters that can be used when creating or updating a customer.
-///
-/// For more details see https://stripe.com/docs/api#create_customer and https://stripe.com/docs/api#update_customer.
-#[derive(Clone, Debug, Default, Serialize)]
-pub struct CustomerParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_balance: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<AddressParams>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_vat_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<String>,
-=======
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -72,21 +42,11 @@ pub struct CustomerParams {
     pub created: Option<Timestamp>,
 
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) the customer can be charged in for recurring billing purposes.
->>>>>>> upstream/master
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
     /// ID of the default payment source for the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-<<<<<<< HEAD
-    pub description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<String>,
-=======
     pub default_source: Option<Expandable<PaymentSource>>,
 
     // Always true for a deleted object
@@ -110,39 +70,11 @@ pub struct CustomerParams {
     pub discount: Option<Discount>,
 
     /// The customer's email address.
->>>>>>> upstream/master
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
     /// The prefix for the customer used to generate unique invoice numbers.
     #[serde(skip_serializing_if = "Option::is_none")]
-<<<<<<< HEAD
-    pub name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_locales: Option<Vec<String>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<Shipping>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<String>,
-    // pub source: Option<PaymentSourceParams<'a>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_exempt: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_id_data: Option<Vec<TaxIdData>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_info: Option<TaxInfo>,
-}
-
-/// The set of parameters that can be used when listing customers.
-///
-/// For more details see https://stripe.com/docs/api#list_customers
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CustomerListParams {
-=======
     pub invoice_prefix: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -159,21 +91,14 @@ pub struct CustomerListParams {
     pub metadata: Metadata,
 
     /// The customer's full name or business name.
->>>>>>> upstream/master
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
     /// The customer's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
-<<<<<<< HEAD
-    pub ending_before: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
-=======
     pub phone: Option<String>,
 
     /// The customer's preferred locales (languages), ordered by preference.
->>>>>>> upstream/master
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locales: Option<Vec<String>>,
 
@@ -181,36 +106,10 @@ pub struct CustomerListParams {
     ///
     /// Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-<<<<<<< HEAD
-    pub starting_after: Option<String>,
-}
-
-/// The resource representing a Stripe customer.
-///
-/// For more details see https://stripe.com/docs/api#customers.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Customer {
-    pub id: CustomerId,
-    pub account_balance: i32,
-    pub address: Option<Address>,
-    pub balance: i32,
-    pub business_vat_id: Option<String>,
-    pub created: Timestamp,
-    pub currency: Option<Currency>,
-    pub default_source: Option<PaymentSourceId>,
-    pub delinquent: bool,
-    pub description: Option<String>,
-    pub discount: Option<Discount>,
-    pub email: Option<String>,
-    pub livemode: bool,
-    pub metadata: Metadata,
-    pub shipping: Option<Shipping>,
-=======
     pub shipping: Option<Shipping>,
 
     /// The customer's payment sources, if any.
     #[serde(default)]
->>>>>>> upstream/master
     pub sources: List<PaymentSource>,
 
     /// The customer's current subscriptions, if any.
@@ -245,11 +144,6 @@ pub struct Customer {
 impl Customer {
     /// Returns a list of your customers.
     ///
-<<<<<<< HEAD
-    /// For more details see https://stripe.com/docs/api#create_customer.
-    pub fn create(client: &Client, params: CustomerParams) -> Response<CustomerResponse> {
-        client.post_form("/customers", params)
-=======
     /// The customers are returned sorted by creation date, with the most recent customers appearing first.
     pub fn list(client: &Client, params: ListCustomers<'_>) -> Response<List<Customer>> {
         client.get_query("/customers", &params)
@@ -258,31 +152,17 @@ impl Customer {
     /// Creates a new customer object.
     pub fn create(client: &Client, params: CreateCustomer<'_>) -> Response<Customer> {
         client.post_form("/customers", &params)
->>>>>>> upstream/master
     }
 
     /// Retrieves the details of an existing customer.
     ///
-<<<<<<< HEAD
-    /// For more details see https://stripe.com/docs/api#retrieve_customer.
-    pub fn retrieve(client: &Client, customer_id: &CustomerId) -> Response<CustomerResponse> {
-        client.get(&format!("/customers/{}", customer_id))
-=======
     /// You need only supply the unique customer identifier that was returned upon customer creation.
     pub fn retrieve(client: &Client, id: &CustomerId, expand: &[&str]) -> Response<Customer> {
         client.get_query(&format!("/customers/{}", id), &Expand { expand })
->>>>>>> upstream/master
     }
 
     /// Updates the specified customer by setting the values of the parameters passed.
     ///
-<<<<<<< HEAD
-    /// For more details see https://stripe.com/docs/api#update_customer.
-    pub fn update_v1(
-        client: &Client,
-        customer_id: &CustomerId,
-        params: CustomerParams,
-=======
     /// Any parameters not provided will be left unchanged.
     /// For example, if you pass the **source** parameter, that becomes the customer’s active source (e.g., a card) to be used for all charges in the future.
     /// When you update a customer to a new valid card source by passing the **source** parameter: for each of the customer’s current subscriptions, if the subscription bills automatically and is in the `past_due` state, then the latest open invoice for the subscription with automatic collection enabled will be retried.
@@ -292,27 +172,11 @@ impl Customer {
         client: &Client,
         id: &CustomerId,
         params: UpdateCustomer<'_>,
->>>>>>> upstream/master
     ) -> Response<Customer> {
         client.post_form(&format!("/customers/{}", id), &params)
     }
 
-<<<<<<< HEAD
-    /// Updates a customer's properties.
-    ///
-    /// For more details see: https://stripe.com/docs/api/customers/update
-    pub fn update(
-        client: &Client,
-        customer_id: &CustomerId,
-        params: CustomerUpdateParams,
-    ) -> Response<CustomerResponse> {
-        client.post_form(&format!("/customers/{}", customer_id), params)
-    }
-
-    /// Deletes a customer.
-=======
     /// Permanently deletes a customer.
->>>>>>> upstream/master
     ///
     /// It cannot be undone.
     /// Also immediately cancels any active subscriptions on the customer.
@@ -370,11 +234,6 @@ pub struct TaxInfo {
 pub struct TaxInfoVerification {
     /// The state of verification for this customer.
     ///
-<<<<<<< HEAD
-    /// For more details see https://stripe.com/docs/api#list_customers.
-    pub fn list(client: &Client, params: CustomerListParams) -> Response<List<CustomerResponse>> {
-        client.get_query("/customers", &params)
-=======
     /// Possible values are `unverified`, `pending`, or `verified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
@@ -498,7 +357,6 @@ impl<'a> CreateCustomer<'a> {
             tax_id_data: Default::default(),
             tax_info: Default::default(),
         }
->>>>>>> upstream/master
     }
 }
 
@@ -704,10 +562,10 @@ pub struct CustomerInvoiceSettings {
     pub footer: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxIdData {
     #[serde(rename = "type")]
-    pub type_: TaxIdDataType,
+    pub type_: Option<TaxIdDataType>,
 
     pub value: String,
 }

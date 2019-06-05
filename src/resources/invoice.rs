@@ -1,7 +1,3 @@
-// ======================================
-// This file was automatically generated.
-// ======================================
-
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
@@ -374,58 +370,6 @@ impl Object for Invoice {
     }
 }
 
-<<<<<<< HEAD
-// TODO: This may not be needed anymore
-/*
-// N.B. Since Invoice ID can be empty, override impl for pagination
-impl List<Invoice> {
-    /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
-    /// Stripe's default page size.
-    ///
-    /// Not supported by `stripe::async::Client`.
-    #[cfg(not(feature = "async"))]
-    pub fn get_all(self, client: &Client) -> Response<Vec<Invoice>> {
-        let mut data = Vec::new();
-        let mut next = self;
-        loop {
-            if next.has_more {
-                let resp = next.next(&client)?;
-                data.extend(next.data);
-                next = resp;
-            } else {
-                data.extend(next.data);
-                break;
-            }
-        }
-        Ok(data)
-    }
-
-    /// Fetch additional page of data from stripe
-    pub fn next(&self, client: &Client) -> Response<List<Invoice>> {
-        use crate::error::Error;
-
-        if let Some(last) = self.data.last() {
-            if let Some(last_id) = &last.id {
-                List::get_next(client, &self.url, &last_id)
-            } else {
-                let invariant = "Cannot paginate List<Invoice>; Stripe returned Invoice with no ID";
-                err(Error::Unexpected(invariant))
-            }
-        } else {
-            ok(List {
-                object: self.object.clone(),
-                data: Vec::new(),
-                has_more: false,
-                total_count: self.total_count,
-                url: self.url.clone(),
-            })
-        }
-    }
-}
-*/
-
-=======
->>>>>>> upstream/master
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomField {
     /// The name of the custom field.

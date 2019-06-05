@@ -80,12 +80,12 @@ pub use crate::client::Client;
 
 pub use crate::error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
 pub use crate::ids::*;
-};
+pub use crate::params::{
     Deleted,
     Expandable, Expand, Object, Paginate,
     RangeBounds, RangeQuery, Timestamp,
     Headers, List, Metadata,
-pub use crate::params::{
+};
 pub use crate::resources::*;
 
 #[cfg(not(feature = "async"))]
