@@ -2,7 +2,7 @@
 members = ["openapi"]
 
 [package]
-name = "stripe-rust-sync" # b.c. stripe and stripe-rs were already taken
+name = "stripe-rust" # b.c. stripe and stripe-rs were already taken
 version = "0.10.1"
 description = "API bindings for the Stripe v1 HTTP API"
 authors = [
@@ -20,7 +20,7 @@ edition = "2018"
 travis-ci = {repository = "wyyerd/stripe-rs"}
 
 [lib]
-name = "stripe_sync"
+name = "stripe"
 
 [features]
 default = ["webhooks"]
