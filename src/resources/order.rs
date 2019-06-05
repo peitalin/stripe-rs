@@ -215,12 +215,12 @@ pub struct CreateOrder<'a> {
     ///
     /// Must be one-time duration and in same currency as the order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    coupon: Option<CouponId>,
+    pub coupon: Option<CouponId>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    currency: Currency,
+    pub currency: Currency,
 
     /// The ID of an existing customer to use for this order.
     ///
@@ -228,26 +228,34 @@ pub struct CreateOrder<'a> {
     /// Subsequently, the customer will also be charged to pay the order.
     /// If `email` or `shipping` are also provided, they will override the values retrieved from the customer object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<CustomerId>,
+    pub customer: Option<CustomerId>,
 
     /// The email address of the customer placing the order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    email: Option<&'a str>,
+    pub email: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
+
+    /// List of items constituting the order.
+    ///
+    /// An order can have up to 25 items.
     #[serde(skip_serializing_if = "Option::is_none")]
-    items: Option<Vec<OrderItemParams>>,
+    pub items: Option<Vec<OrderItemParams>>,
 
     /// A set of key-value pairs that you can attach to an order object.
     ///
     /// Limited to 500 characters.
     /// Metadata can be useful for storing additional information about the order in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
+
+    /// Shipping address for the order.
+    ///
+    /// Required if any of the SKUs are for products that have `shippable` set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping: Option<ShippingParams>,
+    pub shipping: Option<ShippingParams>,
 }
 
 impl<'a> CreateOrder<'a> {
@@ -270,47 +278,53 @@ impl<'a> CreateOrder<'a> {
 pub struct ListOrders<'a> {
     /// Date this order was created.
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// Only return orders for the given customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<CustomerId>,
+    pub customer: Option<CustomerId>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a OrderId>,
+    pub ending_before: Option<OrderId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
+
+    /// Only return orders with the given IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ids: Option<Vec<String>>,
+    pub ids: Option<Vec<String>>,
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a OrderId>,
+    pub starting_after: Option<OrderId>,
 
     /// Only return orders that have the given status.
     ///
     /// One of `created`, `paid`, `fulfilled`, or `refunded`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<OrderStatusFilter>,
+    pub status: Option<OrderStatusFilter>,
+
+    /// Filter orders based on when they were paid, fulfilled, canceled, or returned.
     #[serde(skip_serializing_if = "Option::is_none")]
-    status_transitions: Option<ListOrdersStatusTransitions>,
+    pub status_transitions: Option<ListOrdersStatusTransitions>,
+
+    /// Only return orders with the given upstream order IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    upstream_ids: Option<Vec<String>>,
+    pub upstream_ids: Option<Vec<String>>,
 }
 
 impl<'a> ListOrders<'a> {
@@ -337,33 +351,35 @@ pub struct UpdateOrder<'a> {
     ///
     /// Must be one-time duration and in same currency as the order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    coupon: Option<CouponId>,
+    pub coupon: Option<CouponId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A set of key-value pairs that you can attach to a product object.
     ///
     /// It can be useful for storing additional information about the order in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// The shipping method to select for fulfilling this order.
     ///
     /// If specified, must be one of the `id`s of a shipping method in the `shipping_methods` array.
     /// If specified, will overwrite the existing selected shipping method, updating `items` as necessary.
     #[serde(skip_serializing_if = "Option::is_none")]
-    selected_shipping_method: Option<&'a str>,
+    pub selected_shipping_method: Option<&'a str>,
+
+    /// Tracking information once the order has been fulfilled.
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping: Option<ShippingParams>,
+    pub shipping: Option<ShippingParams>,
 
     /// Current order status.
     ///
     /// One of `created`, `paid`, `canceled`, `fulfilled`, or `returned`.
     /// More detail in the [Orders Guide](https://stripe.com/docs/orders/guide#understanding-order-statuses).
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<OrderStatus>,
+    pub status: Option<OrderStatus>,
 }
 
 impl<'a> UpdateOrder<'a> {
@@ -426,6 +442,29 @@ pub enum OrderItemParamsType {
     Tax,
 }
 
+impl OrderItemParamsType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            OrderItemParamsType::Discount => "discount",
+            OrderItemParamsType::Shipping => "shipping",
+            OrderItemParamsType::Sku => "sku",
+            OrderItemParamsType::Tax => "tax",
+        }
+    }
+}
+
+impl AsRef<str> for OrderItemParamsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for OrderItemParamsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `Order`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -437,6 +476,30 @@ pub enum OrderStatus {
     Returned,
 }
 
+impl OrderStatus {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            OrderStatus::Canceled => "canceled",
+            OrderStatus::Created => "created",
+            OrderStatus::Fulfilled => "fulfilled",
+            OrderStatus::Paid => "paid",
+            OrderStatus::Returned => "returned",
+        }
+    }
+}
+
+impl AsRef<str> for OrderStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for OrderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `ListOrders`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -445,4 +508,27 @@ pub enum OrderStatusFilter {
     Fulfilled,
     Paid,
     Refunded,
+}
+
+impl OrderStatusFilter {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            OrderStatusFilter::Created => "created",
+            OrderStatusFilter::Fulfilled => "fulfilled",
+            OrderStatusFilter::Paid => "paid",
+            OrderStatusFilter::Refunded => "refunded",
+        }
+    }
+}
+
+impl AsRef<str> for OrderStatusFilter {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for OrderStatusFilter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

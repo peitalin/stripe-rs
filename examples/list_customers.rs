@@ -1,4 +1,4 @@
-use stripe::{Customer, CustomerListParams, RangeBounds, RangeQuery};
+use stripe::{Customer, ListCustomers, RangeBounds, RangeQuery};
 
 fn main() {
     // Create a new client
@@ -8,11 +8,13 @@ fn main() {
     // List customers
     let customers = Customer::list(
         &client,
-        CustomerListParams {
+        ListCustomers {
             limit: Some(3),
             created: Some(RangeQuery::gte(1501598702)),
             starting_after: None,
             ending_before: None,
+            email: None,
+            expand: &[],
         },
     )
     .unwrap();
@@ -20,24 +22,23 @@ fn main() {
     // Print the first three customers
     println!("{:?}", customers);
 
-    // List the next three customers (using default)
-    let mut params = CustomerListParams::default();
+    // List the next three customers (using `new`)
+    let mut params = ListCustomers::new();
     params.limit = Some(3);
-    params.starting_after = customers.data.last().map(|cust| cust.id.as_str());
+    params.starting_after = customers.data.last().map(|cust| cust.id.clone());
     let customers2 = Customer::list(&client, params).unwrap();
 
     // Print the following three customers
     println!("{:?}", customers2);
 
     // List all customers within a given time range
-    let range = RangeQuery::Bounds(RangeBounds {
+    let mut params = ListCustomers::new();
+    params.created = Some(RangeQuery::Bounds(RangeBounds {
         gt: None,
-        gte: Some(customers.data[0].created as i64),
+        gte: customers.data[0].created.map(|x| x as i64),
         lt: None,
-        lte: customers2.data.last().map(|cust| cust.created as i64),
-    });
-    let mut params = CustomerListParams::default();
-    params.created = Some(range);
+        lte: customers2.data.last().and_then(|cust| cust.created.map(|x| x as i64)),
+    }));
     let customers3 = Customer::list(&client, params).unwrap();
 
     // Print all customers create in the time range

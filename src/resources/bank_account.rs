@@ -46,7 +46,7 @@ pub struct BankAccount {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// Uniquely identifies this particular bank account.
     ///
@@ -101,4 +101,28 @@ pub enum BankAccountStatus {
     Validated,
     VerificationFailed,
     Verified,
+}
+
+impl BankAccountStatus {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            BankAccountStatus::Errored => "errored",
+            BankAccountStatus::New => "new",
+            BankAccountStatus::Validated => "validated",
+            BankAccountStatus::VerificationFailed => "verification_failed",
+            BankAccountStatus::Verified => "verified",
+        }
+    }
+}
+
+impl AsRef<str> for BankAccountStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for BankAccountStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

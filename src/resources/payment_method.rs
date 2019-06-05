@@ -289,26 +289,27 @@ pub struct ThreeDSecureUsage {
 /// The parameters for `PaymentMethod::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePaymentMethod<'a> {
+    /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_details: Option<BillingDetails>,
+    pub billing_details: Option<BillingDetails>,
 
     /// The `Customer` to whom the original PaymentMethod is attached.
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<CustomerId>,
+    pub customer: Option<CustomerId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Set of key-value pairs that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// The PaymentMethod to share.
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_method: Option<PaymentMethodId>,
+    pub payment_method: Option<PaymentMethodId>,
 
     /// The type of the PaymentMethod.
     ///
@@ -317,7 +318,7 @@ pub struct CreatePaymentMethod<'a> {
     /// Required unless `payment_method` is specified (see the [Shared PaymentMethods](https://stripe.com/docs/payments/payment-methods/connect#shared-paymentmethods) guide).
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    type_: Option<PaymentMethodType>,
+    pub type_: Option<PaymentMethodType>,
 }
 
 impl<'a> CreatePaymentMethod<'a> {
@@ -337,35 +338,35 @@ impl<'a> CreatePaymentMethod<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListPaymentMethods<'a> {
     /// The ID of the customer whose PaymentMethods will be retrieved.
-    customer: CustomerId,
+    pub customer: CustomerId,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a PaymentMethodId>,
+    pub ending_before: Option<PaymentMethodId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a PaymentMethodId>,
+    pub starting_after: Option<PaymentMethodId>,
 
     /// A required filter on the list, based on the object `type` field.
     #[serde(rename = "type")]
-    type_: PaymentMethodType,
+    pub type_: PaymentMethodType,
 }
 
 impl<'a> ListPaymentMethods<'a> {
@@ -384,18 +385,19 @@ impl<'a> ListPaymentMethods<'a> {
 /// The parameters for `PaymentMethod::update`.
 #[derive(Clone, Debug, Serialize)]
 pub struct UpdatePaymentMethod<'a> {
+    /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_details: Option<UpdatePaymentMethodBillingDetails>,
+    pub billing_details: Option<BillingDetails>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Set of key-value pairs that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 }
 
 impl<'a> UpdatePaymentMethod<'a> {
@@ -408,48 +410,33 @@ impl<'a> UpdatePaymentMethod<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentMethodBillingDetails {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<UpdatePaymentMethodBillingDetailsAddress>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<String>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentMethodBillingDetailsAddress {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<String>,
-}
-
 /// An enum representing the possible values of an `PaymentMethod`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodType {
     Card,
     CardPresent,
+}
+
+impl PaymentMethodType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            PaymentMethodType::Card => "card",
+            PaymentMethodType::CardPresent => "card_present",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `WalletDetails`'s `type` field.
@@ -462,4 +449,29 @@ pub enum WalletDetailsType {
     Masterpass,
     SamsungPay,
     VisaCheckout,
+}
+
+impl WalletDetailsType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            WalletDetailsType::AmexExpressCheckout => "amex_express_checkout",
+            WalletDetailsType::ApplePay => "apple_pay",
+            WalletDetailsType::GooglePay => "google_pay",
+            WalletDetailsType::Masterpass => "masterpass",
+            WalletDetailsType::SamsungPay => "samsung_pay",
+            WalletDetailsType::VisaCheckout => "visa_checkout",
+        }
+    }
+}
+
+impl AsRef<str> for WalletDetailsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for WalletDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
