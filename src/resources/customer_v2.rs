@@ -23,6 +23,8 @@ pub struct Customer {
     /// Unique identifier for the object.
     pub id: CustomerId,
 
+    pub balance: i32,
+
     /// Current balance, if any, being stored on the customer's account.
     ///
     /// If negative, the customer has credit to apply to the next invoice.
