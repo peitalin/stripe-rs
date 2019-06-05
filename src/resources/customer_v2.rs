@@ -321,59 +321,30 @@ impl<'a> CreateCustomer<'a> {
         }
     }
 }
-
-
-#[derive(Clone, Debug, Default, Serialize, Deserialize)]
-pub struct CustomerResponse {
-    pub id: String,
-    pub object: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_balance: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<Address>,
-    pub balance: i32,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_vat_id: Option<String>,
-    pub created: Timestamp,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_source: Option<String>,
-    pub delinquent: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<Discount>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_prefix: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<InvoiceSettings>,
-    pub livemode: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<Metadata>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_locales: Option<Vec<String>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<Shipping>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    // pub sources: Option<List<HashMap<String, String>>>,
-    pub sources: Option<List<String>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscriptions: Option<List<Subscription>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_exempt: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_ids: Option<List<TaxIdData>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_info: Option<List<TaxInfo>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_info_verification: Option<String>,
+impl<'a> Default for CreateCustomer<'a> {
+    fn default() -> Self {
+        CreateCustomer {
+            account_balance: Default::default(),
+            balance: Default::default(),
+            address: Default::default(),
+            coupon: Default::default(),
+            description: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            invoice_prefix: Default::default(),
+            invoice_settings: Default::default(),
+            metadata: Default::default(),
+            name: Default::default(),
+            payment_method: Default::default(),
+            phone: Default::default(),
+            preferred_locales: Default::default(),
+            shipping: Default::default(),
+            source: Default::default(),
+            tax_exempt: Default::default(),
+            tax_id_data: Default::default(),
+            tax_info: Default::default(),
+        }
+    }
 }
 
 
@@ -484,6 +455,9 @@ pub struct UpdateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<u64>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance: Option<u64>,
+
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -590,6 +564,36 @@ impl<'a> UpdateCustomer<'a> {
     pub fn new() -> Self {
         UpdateCustomer {
             account_balance: Default::default(),
+            balance: Default::default(),
+            address: Default::default(),
+            coupon: Default::default(),
+            default_alipay_account: Default::default(),
+            default_bank_account: Default::default(),
+            default_card: Default::default(),
+            default_source: Default::default(),
+            description: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            invoice_prefix: Default::default(),
+            invoice_settings: Default::default(),
+            metadata: Default::default(),
+            name: Default::default(),
+            phone: Default::default(),
+            preferred_locales: Default::default(),
+            shipping: Default::default(),
+            source: Default::default(),
+            tax_exempt: Default::default(),
+            tax_info: Default::default(),
+            trial_end: Default::default(),
+        }
+    }
+}
+
+impl<'a> Default for UpdateCustomer<'a> {
+    fn default() -> Self {
+        UpdateCustomer {
+            account_balance: Default::default(),
+            balance: Default::default(),
             address: Default::default(),
             coupon: Default::default(),
             default_alipay_account: Default::default(),
@@ -649,14 +653,6 @@ pub struct CustomerInvoiceSettings {
     pub default_payment_method: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer: Option<String>,
-}
-
-
-#[derive(Clone, Debug, Default, Serialize, Deserialize)]
-pub struct InvoiceSettings {
-    pub custom_fields: Option<HashMap<String, String>>,
-    pub default_payment_method: Option<String>,
     pub footer: Option<String>,
 }
 
