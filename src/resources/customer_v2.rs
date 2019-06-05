@@ -211,6 +211,9 @@ pub struct CreateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<u64>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance: Option<u64>,
+
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -297,6 +300,7 @@ impl<'a> CreateCustomer<'a> {
     pub fn new() -> Self {
         CreateCustomer {
             account_balance: Default::default(),
+            balance: Default::default(),
             address: Default::default(),
             coupon: Default::default(),
             description: Default::default(),
