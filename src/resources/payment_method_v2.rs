@@ -10,7 +10,6 @@ use crate::resources::{
     Checks,
     CardType,
     CardBrand,
-    CardDetails,
     CardPresent,
     CardParamsShort,
     ThreeDSecureUsage,
@@ -270,7 +269,7 @@ pub struct PaymentMethodAttachParams {
 /////////////////////////
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodCard {
+pub struct CardDetails {
     pub brand: CardBrand,
     pub checks: Option<Checks>,
     pub country: String, // eg. "US"

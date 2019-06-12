@@ -108,9 +108,7 @@ pub use self::order_return::*;
 pub use self::payment_intent_v2::*;
 pub use self::payment_method_v2::*;
 pub use self::payment_method::{
-    CardDetails,
     CardPresent,
-    PaymentMethodType,
     PaymentMethodCardChecks,
     PaymentMethodCardGeneratedCard,
 };
