@@ -389,3 +389,40 @@ pub struct WalletVisaCheckout {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address: Option<Address>,
 }
+
+/// An enum representing the possible values of an `WalletDetails`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum WalletDetailsType {
+    AmexExpressCheckout,
+    ApplePay,
+    GooglePay,
+    Masterpass,
+    SamsungPay,
+    VisaCheckout,
+}
+
+impl WalletDetailsType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            WalletDetailsType::AmexExpressCheckout => "amex_express_checkout",
+            WalletDetailsType::ApplePay => "apple_pay",
+            WalletDetailsType::GooglePay => "google_pay",
+            WalletDetailsType::Masterpass => "masterpass",
+            WalletDetailsType::SamsungPay => "samsung_pay",
+            WalletDetailsType::VisaCheckout => "visa_checkout",
+        }
+    }
+}
+
+impl AsRef<str> for WalletDetailsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for WalletDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
