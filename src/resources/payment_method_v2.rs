@@ -14,7 +14,6 @@ use crate::resources::{
     CardParamsShort,
     ThreeDSecureUsage,
     Wallet,
-    WalletDetails,
 };
 use crate::resources::{Address, BillingDetails, Customer};
 use crate::ids::{PaymentMethodId};
@@ -284,3 +283,109 @@ pub struct CardDetails {
     pub wallet: Option<WalletDetails>,
 }
 
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amex_express_checkout: Option<WalletAmexExpressCheckout>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub apple_pay: Option<WalletApplePay>,
+
+    /// (For tokenized numbers only.) The last four digits of the device account number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dynamic_last4: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_pay: Option<WalletGooglePay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub masterpass: Option<WalletMasterpass>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub samsung_pay: Option<WalletSamsungPay>,
+
+    /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, or `visa_checkout`.
+    ///
+    /// An additional hash is included on the Wallet subhash with a name matching this value.
+    /// It contains additional information specific to the card wallet type.
+    #[serde(rename = "type")]
+    pub type_: WalletDetailsType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visa_checkout: Option<WalletVisaCheckout>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletAmexExpressCheckout {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletApplePay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletGooglePay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletMasterpass {
+    /// Owner's verified billing address.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_address: Option<Address>,
+
+    /// Owner's verified email.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    /// Owner's verified full name.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    /// Owner's verified shipping address.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_address: Option<Address>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletSamsungPay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletVisaCheckout {
+    /// Owner's verified billing address.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_address: Option<Address>,
+
+    /// Owner's verified email.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    /// Owner's verified full name.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    /// Owner's verified shipping address.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_address: Option<Address>,
+}
