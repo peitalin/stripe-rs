@@ -14,6 +14,7 @@ use crate::resources::{
     CardParamsShort,
     ThreeDSecureUsage,
     Wallet,
+    WalletDetails,
 };
 use crate::resources::{Address, BillingDetails, Customer};
 use crate::ids::{PaymentMethodId};
