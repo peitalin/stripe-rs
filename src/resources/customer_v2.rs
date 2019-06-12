@@ -397,53 +397,7 @@ impl<'a> ListCustomers<'a> {
         }
     }
 }
-/// The set of parameters that can be used when creating or updating a customer.
-///
-/// For more details see: https://stripe.com/docs/api/customers/update
-#[derive(Clone, Debug, Default, Serialize, Deserialize)]
-pub struct CustomerUpdateParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_balance: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<AddressParams>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_vat_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_source: Option<PaymentSourceId>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<Metadata>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_locales: Option<Vec<String>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<Shipping>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<String>,
-    // pub source: Option<PaymentSourceParams<'a>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_exempt: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_id_data: Option<Vec<TaxIdData>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_info: Option<TaxInfo>,
-}
+
 
 /// The parameters for `Customer::update`.
 #[derive(Clone, Debug, Serialize)]
