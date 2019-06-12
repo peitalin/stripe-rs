@@ -111,6 +111,8 @@ pub use self::payment_method::{
     CardDetails,
     CardPresent,
     PaymentMethodType,
+    PaymentMethodCardChecks,
+    PaymentMethodCardGeneratedCard,
 };
 pub use self::payment_source::*;
 pub use self::payout::*;
