@@ -10,7 +10,6 @@ use crate::resources::{
     Checks,
     CardType,
     CardBrand,
-    CardDetails,
     CardPresent,
     CardParamsShort,
     ThreeDSecureUsage,
@@ -56,7 +55,7 @@ pub struct PaymentMethod {
     /// Set of key-value pairs that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     /// The type of the PaymentMethod.
     ///
@@ -82,6 +81,27 @@ pub enum PaymentMethodType {
     Card,
     CardPresent
 }
+impl PaymentMethodType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            PaymentMethodType::Card => "card",
+            PaymentMethodType::CardPresent => "card_present",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 
 impl PaymentMethod {
 
@@ -249,7 +269,7 @@ pub struct PaymentMethodAttachParams {
 /////////////////////////
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodCard {
+pub struct CardDetails {
     pub brand: CardBrand,
     pub checks: Option<Checks>,
     pub country: String, // eg. "US"
@@ -260,5 +280,149 @@ pub struct PaymentMethodCard {
     pub generated_from: Option<String>,
     pub last4: String,
     pub three_d_secure_usage: Option<ThreeDSecureUsage>,
-    pub wallet: Option<Wallet>,
+    pub wallet: Option<WalletDetails>,
+}
+
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amex_express_checkout: Option<WalletAmexExpressCheckout>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub apple_pay: Option<WalletApplePay>,
+
+    /// (For tokenized numbers only.) The last four digits of the device account number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dynamic_last4: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_pay: Option<WalletGooglePay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub masterpass: Option<WalletMasterpass>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub samsung_pay: Option<WalletSamsungPay>,
+
+    /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, or `visa_checkout`.
+    ///
+    /// An additional hash is included on the Wallet subhash with a name matching this value.
+    /// It contains additional information specific to the card wallet type.
+    #[serde(rename = "type")]
+    pub type_: WalletDetailsType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visa_checkout: Option<WalletVisaCheckout>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletAmexExpressCheckout {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletApplePay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletGooglePay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletMasterpass {
+    /// Owner's verified billing address.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_address: Option<Address>,
+
+    /// Owner's verified email.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    /// Owner's verified full name.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    /// Owner's verified shipping address.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_address: Option<Address>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletSamsungPay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WalletVisaCheckout {
+    /// Owner's verified billing address.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_address: Option<Address>,
+
+    /// Owner's verified email.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    /// Owner's verified full name.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    /// Owner's verified shipping address.
+    ///
+    /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_address: Option<Address>,
+}
+
+/// An enum representing the possible values of an `WalletDetails`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum WalletDetailsType {
+    AmexExpressCheckout,
+    ApplePay,
+    GooglePay,
+    Masterpass,
+    SamsungPay,
+    VisaCheckout,
+}
+
+impl WalletDetailsType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            WalletDetailsType::AmexExpressCheckout => "amex_express_checkout",
+            WalletDetailsType::ApplePay => "apple_pay",
+            WalletDetailsType::GooglePay => "google_pay",
+            WalletDetailsType::Masterpass => "masterpass",
+            WalletDetailsType::SamsungPay => "samsung_pay",
+            WalletDetailsType::VisaCheckout => "visa_checkout",
+        }
+    }
+}
+
+impl AsRef<str> for WalletDetailsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for WalletDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
