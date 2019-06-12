@@ -82,6 +82,27 @@ pub enum PaymentMethodType {
     Card,
     CardPresent
 }
+impl PaymentMethodType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            PaymentMethodType::Card => "card",
+            PaymentMethodType::CardPresent => "card_present",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 
 impl PaymentMethod {
 
