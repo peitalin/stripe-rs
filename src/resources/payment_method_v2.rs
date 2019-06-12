@@ -21,7 +21,6 @@ use crate::ids::{PaymentMethodId};
 use std::collections::HashMap;
 
 
-
 /// The resource representing a Stripe "PaymentMethod".
 ///
 /// For more details see [https://stripe.com/docs/api/payment_methods/object](https://stripe.com/docs/api/payment_methods/object).
@@ -48,6 +47,8 @@ pub struct PaymentMethod {
     /// This will not be set when the PaymentMethod has not been saved to a Customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<Expandable<Customer>>,
+
+    pub object: String,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -246,19 +247,6 @@ pub struct PaymentMethodAttachParams {
 //////////////////////////
 //// Responses
 /////////////////////////
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PaymentMethod {
-    pub id: String,
-    pub object: String,
-    pub billing_details: BillingDetails,
-    pub card: PaymentMethodCard,
-    pub created: Timestamp,
-    pub customer: Option<String>,
-    pub livemode: bool,
-    pub metadata: Option<Metadata>,
-    pub r#type: String,
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodCard {
