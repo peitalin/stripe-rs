@@ -100,7 +100,7 @@ impl PaymentMethod {
     pub fn create(
         client: &Client,
         params: PaymentMethodCreateParams
-    ) -> Response<PaymentMethodResponse> {
+    ) -> Response<PaymentMethod> {
         println!("create(): stripe-rs params: {:?}", params);
         client.post_form("/payment_methods", params)
     }
@@ -113,7 +113,7 @@ impl PaymentMethod {
     pub fn retrieve(
         client: &Client,
         params: PaymentMethodRetrieveParams,
-    ) -> Response<PaymentMethodResponse> {
+    ) -> Response<PaymentMethod> {
         println!("retrieve(): stripe-rs id: {:?}", params.payment_method_id);
         client.get(&format!("/payment_methods/{}", params.payment_method_id))
     }
@@ -129,7 +129,7 @@ impl PaymentMethod {
         client: &Client,
         payment_method_id: String,
         params: PaymentMethodUpdateParams
-    ) -> Response<PaymentMethodResponse> {
+    ) -> Response<PaymentMethod> {
         println!("update(): stripe-rs params: {:?}", params);
         client.post_form(
             &format!("/payment_methods/{}", payment_method_id),
@@ -147,7 +147,7 @@ impl PaymentMethod {
     pub fn list_payment_methods(
         client: &Client,
         params: PaymentMethodsListParams,
-    ) -> Response<List<PaymentMethodResponse>> {
+    ) -> Response<List<PaymentMethod>> {
         client.get_query("/payment_methods", &params)
     }
 
@@ -163,7 +163,7 @@ impl PaymentMethod {
         client: &Client,
         payment_method_id: String,
         params: PaymentMethodAttachParams,
-    ) -> Response<PaymentMethodResponse> {
+    ) -> Response<PaymentMethod> {
         client.post_form(
             &format!("/payment_methods/{}/attach", payment_method_id),
             &params
@@ -180,7 +180,7 @@ impl PaymentMethod {
     pub fn detach_payment_method(
         client: &Client,
         payment_method_id: String,
-    ) -> Response<PaymentMethodResponse> {
+    ) -> Response<PaymentMethod> {
         client.post(&format!("/payment_methods/{}/detach", payment_method_id))
     }
 }
@@ -248,11 +248,11 @@ pub struct PaymentMethodAttachParams {
 /////////////////////////
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PaymentMethodResponse {
+pub struct PaymentMethod {
     pub id: String,
     pub object: String,
     pub billing_details: BillingDetails,
-    pub card: PaymentMethodCardResponse,
+    pub card: PaymentMethodCard,
     pub created: Timestamp,
     pub customer: Option<String>,
     pub livemode: bool,
@@ -261,7 +261,7 @@ pub struct PaymentMethodResponse {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodCardResponse {
+pub struct PaymentMethodCard {
     pub brand: CardBrand,
     pub checks: Option<Checks>,
     pub country: String, // eg. "US"
