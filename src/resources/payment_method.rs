@@ -83,6 +83,7 @@ impl PaymentMethod {
     ) -> Response<PaymentMethod> {
         client.post_form(&format!("/payment_methods/{}", id), &params)
     }
+
 }
 
 impl Object for PaymentMethod {

@@ -262,3 +262,4 @@ pub struct PaymentMethodCard {
     pub three_d_secure_usage: Option<ThreeDSecureUsage>,
     pub wallet: Option<Wallet>,
 }
+
