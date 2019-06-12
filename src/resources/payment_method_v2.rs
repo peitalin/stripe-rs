@@ -280,6 +280,6 @@ pub struct CardDetails {
     pub generated_from: Option<String>,
     pub last4: String,
     pub three_d_secure_usage: Option<ThreeDSecureUsage>,
-    pub wallet: Option<Wallet>,
+    pub wallet: Option<WalletDetails>,
 }
 
