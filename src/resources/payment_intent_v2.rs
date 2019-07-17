@@ -410,8 +410,8 @@ pub struct PaymentIntentCreateParams {
     pub shipping: Option<Shipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<TransferData>,
+    // #[serde(skip_serializing_if = "Option::is_none")]
+    // pub transfer_data: Option<TransferData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<String>,
 }
