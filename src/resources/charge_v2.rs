@@ -62,7 +62,8 @@ pub struct Charge {
 
     /// ID of the customer this charge is for if one exists.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Customer>,
+    // pub customer: Option<Customer>,
+    pub customer: Option<String>,
 
     /// An arbitrary string attached to the object.
     ///
