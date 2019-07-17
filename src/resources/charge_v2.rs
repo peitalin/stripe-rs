@@ -43,7 +43,9 @@ pub struct Charge {
 
     /// ID of the balance transaction that describes the impact of this charge on your account balance (not including refunds or disputes).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance_transaction: Option<BalanceTransaction>,
+    // pub balance_transaction: Option<BalanceTransaction>,
+    pub balance_transaction: Option<String>,
+    //e.g "txn_1ExEnSKqy1M9WH1DD5a4ojHp"
 
     pub billing_details: BillingDetails,
 
