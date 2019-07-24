@@ -32,9 +32,9 @@ pub struct SetupIntent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_setup_error: Option<String>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub liveMode: bool,
+    pub livemode: bool,
     #[serde(default)]
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub next_action: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -166,9 +166,6 @@ pub struct SetupIntentUpdateParams {
     /// The Stripe account ID for which this SetupIntent is created.
     pub payment_method: Option<String>,
 
-    /// Payment-method-specific configuration for this SetupIntent.
-    pub payment_method_options: Option<SetupIntentCard>,
-
     /// The list of payment method types that this SetupIntent is allowed
     /// to set up. If this is not provided, defaults to [“card”].
     pub payment_method_types: Option<Vec<String>>,
@@ -184,7 +181,7 @@ pub struct SetupIntentConfirmParams {
     pub payment_method: Option<String>,
 
     /// Payment-method-specific configuration for this SetupIntent.
-    pub payment_method_options: Option<Card>,
+    pub payment_method_options: Option<SetupIntentCard>,
 
     /// return url
     pub return_url: Option<String>,
