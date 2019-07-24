@@ -167,7 +167,7 @@ pub struct SetupIntentUpdateParams {
     pub payment_method: Option<String>,
 
     /// Payment-method-specific configuration for this SetupIntent.
-    pub payment_method_options: Option<Card>,
+    pub payment_method_options: Option<SetupIntentCard>,
 
     /// The list of payment method types that this SetupIntent is allowed
     /// to set up. If this is not provided, defaults to [“card”].
@@ -200,3 +200,21 @@ pub struct SetupIntentCancelParams {
     /// are abandoned, requested_by_customer, or duplicate
     pub cancellation_reason: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+pub struct SetupIntentCard {
+    pub card: Request3dSercure
+}
+/// if you wish to request 3D Secure based on logic from your own fraud engine,
+/// provide this option. Permitted values include: automatic or any.
+/// If not provided, defaults to automatic. Read our guide on manually
+/// requesting 3D Secure for more information on how this configuration
+/// interacts with Radar and our SCA Engine.
+
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+pub struct Request3dSecure {
+    pub request_three_d_secure: Option<String>,
+}
+
+
+
