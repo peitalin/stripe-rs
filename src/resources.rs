@@ -38,6 +38,7 @@ mod order;
 mod order_item;
 mod order_return;
 mod payment_intent_v2;
+// mod payment_intent;
 mod payment_method_v2;
 mod payment_method;
 mod payment_source;
@@ -52,6 +53,7 @@ mod reserve_transaction;
 mod review;
 mod scheduled_query_run;
 mod session;
+mod setup_intent;
 mod sku;
 mod source;
 mod subscription;
@@ -128,6 +130,7 @@ pub use self::session::{
     LineItem,
     SessionParams,
 };
+pub use self::setup_intent::*;
 pub use self::sku::*;
 pub use self::source::*;
 pub use self::subscription::*;
