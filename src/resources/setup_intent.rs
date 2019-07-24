@@ -46,7 +46,7 @@ pub struct SetupIntent {
     // pub payment_method_options: Option<Card>,
     pub payment_method_options: Option<SetupIntentCard>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<String>,
+    pub payment_method_types: Option<Vec<String>>,
     pub status: String,
     pub usage: String,
 }
