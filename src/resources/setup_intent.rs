@@ -17,35 +17,23 @@ pub struct SetupIntent {
     /// Unique identifier for the object.
     pub id: String,
     pub object: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub cancellation_reason: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<Timestamp>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_setup_error: Option<String>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     #[serde(default)]
     pub metadata: Option<Metadata>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub next_action: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     // pub on_behalf_of: Option<Account>,
     pub on_behalf_of: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     // pub payment_method_options: Option<Card>,
     pub payment_method_options: Option<SetupIntentCard>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<String>>,
     pub status: String,
     pub usage: String,
