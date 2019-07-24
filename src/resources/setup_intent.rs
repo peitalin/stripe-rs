@@ -1,7 +1,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
-use crate::ids::{CustomerId, SetupIntentId};
+use crate::ids::{CustomerId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Application, Charge, Currency, Customer, Invoice, PaymentMethod, PaymentSource,
