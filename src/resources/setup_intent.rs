@@ -203,7 +203,7 @@ pub struct SetupIntentCancelParams {
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct SetupIntentCard {
-    pub card: Request3dSercure
+    pub card: Request3dSecure
 }
 /// if you wish to request 3D Secure based on logic from your own fraud engine,
 /// provide this option. Permitted values include: automatic or any.
