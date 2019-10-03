@@ -1,5 +1,6 @@
 use crate::params::Timestamp;
 use serde_derive::{Deserialize, Serialize};
+use crate::resources::payment_method::{CardDetails};
 
 /// An enum representing the possible values of a `BankAccount`'s `account_holder_type` field.
 ///
@@ -122,7 +123,9 @@ pub struct PackageDimensions {
 // TODO: Implement
 /// This type is a stub that still needs to be implemented.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodDetails {}
+pub struct PaymentMethodDetails {
+    pub card: Option<CardDetails>,
+}
 
 /// Period is a structure representing a start and end dates.
 #[derive(Clone, Debug, Deserialize, Serialize)]

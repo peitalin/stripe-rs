@@ -132,7 +132,7 @@ pub struct CardDetails {
 
     /// Details of the original PaymentMethod that created this object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub generated_from: Option<PaymentMethodCardGeneratedCard>,
+    pub generated_from: Box<Option<PaymentMethodCardGeneratedCard>>,
 
     /// The last four digits of the card.
     pub last4: String,
@@ -169,7 +169,7 @@ pub struct PaymentMethodCardGeneratedCard {
 
     /// Transaction-specific details of the payment method used in the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_details: Option<PaymentMethodDetails>,
+    pub payment_method_details: Box<Option<PaymentMethodDetails>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
