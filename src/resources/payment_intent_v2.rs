@@ -52,7 +52,7 @@ pub struct PaymentIntent {
     pub capture_method: PaymentIntentCaptureMethod,
 
     /// Charges that were created by this PaymentIntent, if any.
-    #[serde(default)]
+    // #[serde(default)]
     pub charges: List<Charge>,
 
     /// The client secret of this PaymentIntent.
