@@ -122,7 +122,7 @@ impl PaymentMethod {
         client: &Client,
         params: PaymentMethodCreateParams
     ) -> Response<PaymentMethod> {
-        println!("create(): stripe-rs params: {:?}", params);
+        // println!("create(): stripe-rs params: {:?}", params);
         client.post_form("/payment_methods", params)
     }
 
@@ -135,7 +135,7 @@ impl PaymentMethod {
         client: &Client,
         params: PaymentMethodRetrieveParams,
     ) -> Response<PaymentMethod> {
-        println!("retrieve(): stripe-rs id: {:?}", params.payment_method_id);
+        // println!("retrieve(): stripe-rs id: {:?}", params.payment_method_id);
         client.get(&format!("/payment_methods/{}", params.payment_method_id))
     }
 
@@ -151,7 +151,7 @@ impl PaymentMethod {
         payment_method_id: String,
         params: PaymentMethodUpdateParams
     ) -> Response<PaymentMethod> {
-        println!("update(): stripe-rs params: {:?}", params);
+        // println!("update(): stripe-rs params: {:?}", params);
         client.post_form(
             &format!("/payment_methods/{}", payment_method_id),
             params
