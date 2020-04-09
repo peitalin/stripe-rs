@@ -160,6 +160,7 @@ impl<'a> CreateRefund<'a> {
             charge: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
+            payment_intent: Default::default(),
             reason: Default::default(),
             refund_application_fee: Default::default(),
             reverse_transfer: Default::default(),
