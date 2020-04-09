@@ -141,6 +141,9 @@ pub struct CreateRefund<'a> {
     pub metadata: Option<Metadata>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reason: Option<RefundReason>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
